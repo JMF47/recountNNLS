@@ -1,3 +1,12 @@
+#' NNLS for Tx Abundance Calculation
+#'
+#' This function will use a NNLS to calculate the Tx abundance
+#' using reduced-representation of coverage information
+#' extracted from rail output available on recount2
+#' @param pheno The a table of phenotype information from processPheno().
+#' @param cores The number of processing cores to use.
+#' @keywords recountNNLS
+#' @export
 recountNNLS = function(pheno, cores=1){
       rl = unique(pheno$rls_group)
       counts_ex = getExCounts(pheno)
@@ -30,9 +39,3 @@ recountNNLS = function(pheno, cores=1){
       rse_tx = SummarizedExperiment(assays=list(counts=reads, se=se), rowRanges=rowRanges, colData=pheno)
       return(rse_tx)
 }
-
-# counts = apply(counts, 2, as.numeric)
-# # colnames(counts) = NULL; rownames(counts) = NULL
-# colnames(se) = NULL; rownames(se) = NULL
-# colData = colData(rse_gene)
-# colData = colData[match(colnames, rownames(colData)),]
