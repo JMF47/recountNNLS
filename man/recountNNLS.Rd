@@ -12,8 +12,7 @@ recountNNLS(pheno, cores = 1)
 \item{cores}{The number of processing cores to use.}
 }
 \description{
-This function will use a NNLS to calculate the Tx abundance
-using reduced-representation of coverage information
-extracted from rail output available on recount2
+This function apply NNLS to calculate the Tx abundance
+from reduced-representation of coverage information.
 }
 \keyword{recountNNLS}

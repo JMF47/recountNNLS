@@ -1,3 +1,10 @@
+#' Phenotype Information Creation
+#'
+#' This function creates a phenotype matrix with the information needed
+#' to be fed into recountNNLS().
+#' @param input The project name from SRA.
+#' @keywords processPheno
+#' @export
 processPheno = function(input){
       ## If input is of length 1, will interpret as SRA project name
       if(length(input)==1){
