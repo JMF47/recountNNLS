@@ -22,14 +22,12 @@ recountNNLS = function(pheno, cores=1){
 
       reads = rbind(reads, colin_mat)
       se = rbind(se, colin_mat)
-
       data(tx_grl, package = "recountNNLSdata")
       rowRanges = rng[match(rownames(reads), names(rng))]
 
       rownames(se) = NULL; colnames(se) = NULL
       rownames(reads) = NULL; colnames(reads) = NULL
       rse_tx = SummarizedExperiment(assays=list(counts=reads, se=se), rowRanges=rowRanges, colData=pheno)
-
       return(rse_tx)
 }
 
