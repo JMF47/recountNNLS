@@ -17,7 +17,11 @@ recountNNLS = function(pheno, cores=1){
       colin = do.call(rbind, sapply(info, function(x) x[[3]]))
       se = sqrt(apply(vars, 2, as.numeric))
 
+      colin_mat = matrix(rep(NA, dim(pheno)[1]*dim(colin)[1]), ncol=dim(pheno)[1], nrow=dim(colin)[1])
+      rownames(colin_mat) = colin$transcript_id
 
+      reads = rbind(reads, colin_mat)
+      se = rbind(se, colin_mat)
 
       data(tx_grl, package = "recountNNLSdata")
       rowRanges = rng[match(rownames(reads), names(rng))]
