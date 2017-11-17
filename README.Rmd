@@ -6,7 +6,7 @@ output: html_document
 ---
 
 ```{r}
-library(recount); library(recountNNLSdata); library(rtracklayer); library(nnls)
+library(recountNNLS)
 project = 'SRP063581'
 pheno = processPheno(project)
 rse_tx = recountNNLS(pheno, cores=1)
