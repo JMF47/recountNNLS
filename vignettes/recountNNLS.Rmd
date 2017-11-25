@@ -10,11 +10,35 @@ vignette: >
 
 ## Overview
 
-This pacakge provides the code for implementing the non-negative least squares (NNLS) estimation of transcript abundance based on the reduced-representation output from *rail*. All of the SRA projects quantified by *rail* and compiled by the *recount2* project can be directly quantified by inputing just the *Sequencing Read Archive* (SRA) project name. Otherwise, users can supply a manifest that contains the necessary paths to the bigwig and junction tables that *rail* outputs.
+This pacakge provides the code for a non-negative least squares (NNLS) estimation of transcript abundance using reduced-representation output from *rail*. All of the SRA projects quantified by *rail* and compiled by the *recount2* project can be directly quantified by inputing just the *Sequencing Read Archive* (SRA) project name. Otherwise, users can supply some necessary information as outlined below.
 
-## Manifest
+## Quantifying Samples on recount2
 
-If not quantifying the transcript expression of a project already compiled by *recount2*, a manifest of 3 columns is required. The first column will list the names of the samples as well as an etnry for the junctions *rail* detected. The second column will list the path to the bigwig files of each sample as well as the junction file. The third column will be the sequencing read length of each sample.
+To use our NNLS model on the samples on recount2, all one needs is the SRA project id.
+
+```{r, eval=F}
+library(recountNNLS)
+
+## Specify a SRA project and download the relevant path data from recount2
+project = 'SRP063581'
+pheno = processPheno(project)
+
+## Compile the coverage of the relevant exonic segments
+counts_ex = getExCounts(pheno)
+
+## Compile the coverage of the relevant junctions
+counts_jx = getJxCounts(project)
+
+## Main NNLS workhorse function to create a RSE of transcript abundance
+rse_tx = recountNNLS(pheno, counts_ex, counts_jx, cores=1)
+
+```
+## Data Not Yet Part of recount2
+
+If not quantifying the transcript expression of a project already compiled by *recount2*, the user will need to provide:
+
+1. A manifest of 3 columns is required. The first column will list the names of the samples quantified by *rail*. The second column will list the path to the bigwig files of each sample. The third column will be the sequencing read length of each sample.
+2. A path to the junction table created by *rail*. It is usually located in the folder `cross_sample_results/junctions.tsv.gz`.
 
 ```{r, echo =F}
 base='/dcl01/leek/data/ta_poc/geuvadis/simulation/37_1/rail/rail-rna_out/'
@@ -29,7 +53,32 @@ manifest
 junction_path
 ```
 
+To obtain the necessary inputs for the linear model, one would apply:
+```{r, eval=F}
+library(recountNNLS)
+## Analyze the manifest input to format for downstream use
+pheno = processPheno(manifest)
 
+## Compile the coverage of the relevant exonic segments
+counts_ex = getExCounts(pheno)
+
+## Compile the coverage of the relevant junctions
+counts_jx = getJxCounts(junction_path)
+
+## Main NNLS workhorse function to create a RSE of transcript abundance
+rse_tx = recountNNLS(pheno, counts_ex, counts_jx, cores=1)
+```
+
+## Deliverables
+
+The output of `recountNNLS()` is a `RangeSummarizedExperiment` where:
+
+* Each row corresponds to a transcript
+* Each column corresponds to a run (sample)
+* `rowRanges()` can be used to access a `GRangesList` annotation of the transcripts
+* `assays()` returns a list of length 2 that can be access with `$`
+      + `$counts` returns a matrix of estimated transcript abundance on a number of reads scale
+      + `$se` returns a matrix of estimated standard error of the abundance
 
 
 

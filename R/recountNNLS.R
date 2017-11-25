@@ -1,8 +1,9 @@
 #' NNLS for Tx Abundance Calculation
 #'
-#' This function apply NNLS to calculate the Tx abundance
-#' from reduced-representation of coverage information.
-#' @param pheno The a table of phenotype information from processPheno().
+#' This function applies NNLS to calculate the Tx abundance
+#' from coverage of exonic and junction coverage statistics extracfted using getExCounts()
+#' and getJxCounts().
+#' @param pheno The table of phenotype information from processPheno().
 #' @param cores The number of processing cores to use.
 #' @keywords recountNNLS
 #' @export
@@ -17,7 +18,7 @@ recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
       data(list=paste0("matrix_", rl), package = "recountNNLSdata")
       genes = names(matrix_list)
 
-      ## NNLS
+      ## Run the NNLS
       info = mclapply(genes, .calculateReads, matrix_list, counts, junction_weight=rl, power=1, mc.cores = cores)
       reads = do.call(rbind, sapply(info, function(x)x[[1]]))
             norm_matrix = matrix(rep(as.numeric(pheno$avg_read_length), times = dim(reads)[1]), byrow=T, ncol = dim(reads)[2])
@@ -43,13 +44,8 @@ recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
       return(rse_tx)
 }
 
-.calculateReads = function(gene, ems, counts, junction_weight, power, verbose=TRUE){
-      if(verbose==TRUE){
-            ind = which(names(ems)==gene)
-            if((ind%%1000)==0){
-                  print(ind); flush.console()
-            }
-      }
+## Gene-wise execution of NNLS
+.calculateReads = function(gene, ems, counts, junction_weight, power){
       b = NULL; Vb = NULL; colinear_info = NULL
       P = ems[[gene]]
       ## If there emission matrix is not empty

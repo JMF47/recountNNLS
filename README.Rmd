@@ -5,40 +5,86 @@ date: "11/17/2017"
 output: html_document
 ---
 
-To quantify samples in with SRA project name compiled in recount2, the process is as follows:
+## Overview
+
+This pacakge provides the code for a non-negative least squares (NNLS) estimation of transcript abundance using reduced-representation output from *rail*. All of the SRA projects quantified by *rail* and compiled by the *recount2* project can be directly quantified by inputing just the *Sequencing Read Archive* (SRA) project name. Otherwise, users can supply some necessary information as outlined below.
+
+## Installation
+Prior to the installation of `recountNNLS` please install the companion data package `recountNNLSdata`:
 
 ```{r}
+source("https://bioconductor.org/biocLite.R")
+biocLite("recountNNLSdata")
+biocLite("recountNNLS")
+```
+
+## Quantifying Samples on recount2
+
+To use our NNLS model on the samples on recount2, all one needs is the SRA project id.
+
+```{r, eval=F}
 library(recountNNLS)
+
+## Specify a SRA project and download the relevant path data from recount2
 project = 'SRP063581'
 pheno = processPheno(project)
 
-## Extract the exonic counts for modeling
+## Compile the coverage of the relevant exonic segments
 counts_ex = getExCounts(pheno)
-## Extract the junction counts for modeling
+
+## Compile the coverage of the relevant junctions
 counts_jx = getJxCounts(project)
-rse_tx = recountNNLS(pheno, counts_ex, counts_jx, cores=20)
+
+## Main NNLS workhorse function to create a RSE of transcript abundance
+rse_tx = recountNNLS(pheno, counts_ex, counts_jx, cores=1)
 
 ```
+## Data Not Yet Part of recount2
 
-Otherwise, to supply your own project's output from rail for this NNLS model:
+If not quantifying the transcript expression of a project already compiled by *recount2*, the user will need to provide:
 
-```{r}
-library(recountNNLS)
+1. A manifest of 3 columns is required. The first column will list the names of the samples quantified by *rail*. The second column will list the path to the bigwig files of each sample. The third column will be the sequencing read length of each sample.
+2. A path to the junction table created by *rail*. It is usually located in the folder `cross_sample_results/junctions.tsv.gz`.
+
+```{r, echo =F}
 base='/dcl01/leek/data/ta_poc/geuvadis/simulation/37_1/rail/rail-rna_out/'
 manifest = data.frame(run = c("sample_01", "sample_02", "sample_03", "sample_04"), 
                       bigwig_path = c('coverage_bigwigs/sample_01.bw', 'coverage_bigwigs/sample_02.bw', 
                                'coverage_bigwigs/sample_03.bw', 'coverage_bigwigs/sample_04.bw'),
                       avg_read_length = c(37, 37, 37, 37))
-junction_path =  '/dcl01/leek/data/ta_poc/geuvadis/simulation/37_1/rail/rail-rna_out/cross_sample_results/junctions.tsv.gz'
-manifest$bigwig_path = paste0(base, manifest$bigwig_path)
-pheno = processPheno(manifest)
-counts_ex = getExCounts(pheno)
-counts_jx = getJxCounts(junction_path)
-rse_tx = recountNNLS(pheno, counts_ex, counts_jx, cores=20)
+junction_path =  'cross_sample_results/junctions.tsv.gz'
+```
+```{r}
+manifest
+junction_path
 ```
 
-gff = import.gff("/dcl01/leek/data/ta_poc/GencodeV25/gencodeV25.coding.gff3")
-gff_tx = gff[!is.na(gff$transcript_id)]
-rng = split(gff_tx, gff_tx$transcript_id)
+To obtain the necessary inputs for the linear model, one would apply:
+```{r, eval=F}
+library(recountNNLS)
+## Analyze the manifest input to format for downstream use
+pheno = processPheno(manifest)
 
-gff_tx = gff[gff$type=="transcript"]
+## Compile the coverage of the relevant exonic segments
+counts_ex = getExCounts(pheno)
+
+## Compile the coverage of the relevant junctions
+counts_jx = getJxCounts(junction_path)
+
+## Main NNLS workhorse function to create a RSE of transcript abundance
+rse_tx = recountNNLS(pheno, counts_ex, counts_jx, cores=1)
+```
+
+## Deliverables
+
+The output of `recountNNLS()` is a `RangeSummarizedExperiment` where:
+
+* Each row corresponds to a transcript
+* Each column corresponds to a run (sample)
+* `rowRanges()` can be used to access a `GRangesList` annotation of the transcripts
+* `assays()` returns a list of length 2 that can be access with `$`
+      + `$counts` returns a matrix of estimated transcript abundance on a number of reads scale
+      + `$se` returns a matrix of estimated standard error of the abundance
+
+
+
