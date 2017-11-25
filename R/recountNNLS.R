@@ -6,13 +6,8 @@
 #' @param cores The number of processing cores to use.
 #' @keywords recountNNLS
 #' @export
-recountNNLS = function(pheno, cores=1){
-      rl = unique(pheno$rls_group)
-
-      ## Extract the exonic counts for modeling
-      counts_ex = getExCounts(pheno)
-      ## Extract the junction counts for modeling
-      counts_jx = getJxCounts(pheno)
+recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
+      ## Stack the counts matrix for input
       counts = rbind(counts_ex, counts_jx)
 
       ## Load emission probability matrices
