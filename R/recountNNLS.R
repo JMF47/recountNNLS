@@ -3,6 +3,7 @@
 #' This function apply NNLS to calculate the Tx abundance
 #' from reduced-representation of coverage information.
 #' @param pheno The a table of phenotype information from processPheno().
+#'
 #' @param cores The number of processing cores to use.
 #' @keywords recountNNLS
 #' @export
