@@ -21,7 +21,7 @@ getExCounts = function(pheno){
             grl[[chr]] = bins[seqnames(bins)==chr]
 
       ## Counting the coverage of exonic features by file
-      list_totCov= lapply(pheno$bigwig_path, .processSample, grl)
+      list_totCov= lapply(pheno$bigwig_path, .processSample, grl, bins)
       ## Assembling the count information
       totCov = do.call(cbind, list_totCov)
       ## Giving correct exonic feature annotation
@@ -30,7 +30,7 @@ getExCounts = function(pheno){
       return(totCov)
 }
 
-.processSample = function(sampleFile, grl){
+.processSample = function(sampleFile, grl, bins){
       message("Processing sample ", sampleFile)
 
       cov_rle = rtracklayer::import(sampleFile, as = 'RleList')
@@ -39,11 +39,11 @@ getExCounts = function(pheno){
       grl_keep = grl[match(names(cov_rle_matched), names(grl), nomatch=0)]
       cov_binned = sapply(names(grl_keep), .processChr, cov_rle_matched, grl_keep)
             cov_binned = do.call(c, cov_binned)
-      id = match(bins, do.call(c, grl_keep))
+      id = match(bins, unlist(grl_keep))
 
       cov_out = rep(0, length(bins))
       cov_out[id[!is.na(id)]] = cov_binned[!is.na(id)]
-      return(totCov)
+      return(cov_out)
 }
 .processChr = function(chr, rle_cov, grl_bins){
       sum(Views(rle_cov[[chr]], ranges(grl_bins[[chr]])))
