@@ -10,7 +10,7 @@ getExCounts = function(pheno){
       ## Evaluate the consistency of read lengths supplied in phenotype
       rl = unique(pheno$rls_group)
       if(length(rl)>1)
-            stop("Cannot process two different read group lengths at the same time. Please split pheno")
+            stop("Cannot process two different read group lengths at the same time. Please split analysis."))
 
       ## Load appropriate features based on read count
       data(list=paste0("bins_", rl), package = "recountNNLSdata")
