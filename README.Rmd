@@ -5,6 +5,8 @@ date: "11/17/2017"
 output: html_document
 ---
 
+To quantify samples in with SRA project name compiled in recount2, the process is as follows:
+
 ```{r}
 library(recountNNLS)
 project = 'SRP063581'
@@ -14,20 +16,23 @@ pheno = processPheno(project)
 counts_ex = getExCounts(pheno)
 ## Extract the junction counts for modeling
 counts_jx = getJxCounts(project)
+rse_tx = recountNNLS(pheno, counts_ex, counts_jx, cores=20)
 
+```
+
+Otherwise, to supply your own project's output from rail for this NNLS model:
+
+```{r}
 base='/dcl01/leek/data/ta_poc/geuvadis/simulation/37_1/rail/rail-rna_out/'
 manifest = data.frame(run = c("sample_01", "sample_02", "sample_03", "sample_04"), 
                       bigwig_path = c('coverage_bigwigs/sample_01.bw', 'coverage_bigwigs/sample_02.bw', 
                                'coverage_bigwigs/sample_03.bw', 'coverage_bigwigs/sample_04.bw'),
                       avg_read_length = c(37, 37, 37, 37))
-junction_path =  'cross_sample_results/junctions.tsv.gz'
+junction_path =  '/dcl01/leek/data/ta_poc/geuvadis/simulation/37_1/rail/rail-rna_out/cross_sample_results/junctions.tsv.gz'
 manifest$bigwig_path = paste0(base, manifest$bigwig_path)
 pheno = processPheno(manifest)
-
-## Extract the exonic counts for modeling
 counts_ex = getExCounts(pheno)
-## Extract the junction counts for modeling
 counts_jx = getJxCounts(junction_path)
 
-rse_tx = recountNNLS(pheno, cores=1)
+
 ```

@@ -26,6 +26,7 @@ getExCounts = function(pheno){
       totCov = do.call(cbind, list_totCov)
       ## Giving correct exonic feature annotation
       rownames(totCov) = paste0("e", 1:length(bins))
+      colnames(totCov) = pheno$run
 
       return(totCov)
 }
