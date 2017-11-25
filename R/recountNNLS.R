@@ -13,7 +13,7 @@ recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
       ## Load emission probability matrices
       rl = unique(pheno$avg_read_length)
       if(length(rl)>1)
-            stop("Cannot process two different read group lengths at the same time. Please split analysis."))
+            stop("Cannot process two different read group lengths at the same time. Please split analysis.")
       data(list=paste0("matrix_", rl), package = "recountNNLSdata")
       genes = names(matrix_list)
 
