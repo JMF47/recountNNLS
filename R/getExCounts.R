@@ -16,9 +16,10 @@ getExCounts = function(pheno){
       data(list=paste0("bins_", rl), package = "recountNNLSdata")
 
       ## Create a GRangesList by chr
-      grl = GRangesList()
-      for(chr in unique(seqnames(bins)))
-            grl[[chr]] = bins[seqnames(bins)==chr]
+      # grl = GRangesList()
+      # for(chr in unique(seqnames(bins)))
+      #       grl[[chr]] = bins[seqnames(bins)==chr]
+      grl = split(gr, seqnames(gr))
 
       ## Counting the coverage of exonic features by file
       list_totCov= lapply(pheno$bigwig_path, .processSample, grl, bins)
