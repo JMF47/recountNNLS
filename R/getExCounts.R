@@ -19,7 +19,7 @@ getExCounts = function(pheno){
       # grl = GRangesList()
       # for(chr in unique(seqnames(bins)))
       #       grl[[chr]] = bins[seqnames(bins)==chr]
-      grl = split(bins, seqnames(bins))
+      grl = GenomicRanges::split(bins, seqnames(bins))
 
       ## Counting the coverage of exonic features by file
       list_totCov= lapply(pheno$bigwig_path, .processSample, grl, bins)
