@@ -1,8 +1,10 @@
 #' Phenotype Information Creation
 #'
 #' This function creates a phenotype matrix with the information needed
-#' to be fed into recountNNLS().
-#' @param input The project name from SRA.
+#' for the rest of the analysis. The supplied input is either an SRA
+#' project id (from a project compiled on recount2), or a manifest file
+#' that contains information where the rail outputs are.
+#' @param input The project name from SRA or a manifest file.
 #' @keywords processPheno
 #' @export
 processPheno = function(input){
