@@ -1,7 +1,8 @@
 Package: recountNNLS
-Title: What the Package Does (one line, title case)
+Title: LINEAR MODELING FROM REDUCED REPRESENTATION DATA
 Version: 0.0.0.9000
-Authors@R: person("First", "Last", email = "first.last@example.com", role = c("aut", "cre"))
+Maintainer: Jack Fu <jmfu@jhsph.edu>
+Author: Jack Fu <jmfu@jhsph.edu>
 Description: What the package does (one paragraph).
 Depends: R (>= 3.3.1),
       recountNNLSdata,
