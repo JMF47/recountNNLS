@@ -36,3 +36,9 @@ counts_ex = getExCounts(pheno)
 counts_jx = getJxCounts(junction_path)
 rse_tx = recountNNLS(pheno, counts_ex, counts_jx, cores=20)
 ```
+
+gff = import.gff("/dcl01/leek/data/ta_poc/GencodeV25/gencodeV25.coding.gff3")
+gff_tx = gff[!is.na(gff$transcript_id)]
+rng = split(gff_tx, gff_tx$transcript_id)
+
+gff_tx = gff[gff$type=="transcript"]
