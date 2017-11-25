@@ -7,10 +7,12 @@
 processPheno(input)
 }
 \arguments{
-\item{input}{The project name from SRA.}
+\item{input}{The project name from SRA or a manifest file.}
 }
 \description{
 This function creates a phenotype matrix with the information needed
-to be fed into recountNNLS().
+for the rest of the analysis. The supplied input is either an SRA
+project id (from a project compiled on recount2), or a manifest file
+that contains information where the rail outputs are.
 }
 \keyword{processPheno}
