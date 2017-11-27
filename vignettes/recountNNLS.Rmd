@@ -10,7 +10,7 @@ vignette: >
 
 ## Overview
 
-This pacakge provides an interface to estimate transcript abundances of any samples quantified by the aligner *rail*. This method is a non-negative least squares (NNLS) estimation that calculates the number of reads that originated from each transcript of the coding portion of the GencodeV25 transcriptome. The model does not require raw aligned `bam` files, but is content with compressed coverage statistics primarily stored in `bigwig` formats. 
+<!-- This pacakge provides an interface to estimate transcript abundances of any samples quantified by the aligner *rail*. This method is a non-negative least squares (NNLS) estimation that calculates the number of reads that originated from each transcript of the coding portion of the GencodeV25 transcriptome. The model does not require raw aligned `bam` files, but is content with compressed coverage statistics primarily stored in `bigwig` formats.  -->
 
 All of the SRA projects compiled by *recount2* already have transcript expression pre-computed through this method and is accessible through *recount2*. To replicate the abundance estimation of any SRA project in *recount2*, the user only needs to supply the SRA project id. Otherwise, users can supply the necessary information as outlined further below to utilize this package to carry out transcript abundance estimation.
 
