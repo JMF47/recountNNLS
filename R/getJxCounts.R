@@ -2,8 +2,8 @@
 #'
 #' This function returns the coverage of the junction portion of the sufficient
 #' features identified based on sequencing read length.
-#' @param input Either a SRA project name (part of recount2) or
-#' the path to the rail output file containing junction information 'cross_sample_results/junctions.tsv.gz'.
+#' @param input Either a SRA project name (part of recount2) OR
+#' the path to the rail output file containing junction information of the form 'cross_sample_results/junctions.tsv.gz'.
 #' @keywords getJxCounts
 #' @export
 getJxCounts = function(input){

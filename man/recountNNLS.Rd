@@ -9,11 +9,15 @@ recountNNLS(pheno, counts_ex, counts_jx, cores = 1)
 \arguments{
 \item{pheno}{The table of phenotype information from processPheno().}
 
+\item{counts_ex}{The counts of exonic features from getExCounts().}
+
+\item{counts_jx}{The counts of junctions from getJxCounts().}
+
 \item{cores}{The number of processing cores to use.}
 }
 \description{
 This function applies NNLS to calculate the Tx abundance
-from coverage of exonic and junction coverage statistics extracfted using getExCounts()
+from coverage of exonic and junction coverage statistics extracted using getExCounts()
 and getJxCounts().
 }
 \keyword{recountNNLS}

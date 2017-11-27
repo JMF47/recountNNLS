@@ -7,7 +7,7 @@
 getExCounts(pheno)
 }
 \arguments{
-\item{pheno}{The phenotype matrix created by processPheno()}
+\item{pheno}{The phenotype matrix created by processPheno().}
 }
 \description{
 This function returns the coverage of the exonic portion of sufficient
