@@ -6,8 +6,8 @@ This pacakge provides an interface to estimate transcript abundances of any samp
 Prior to the installation of `recountNNLS` please install the companion data package `recountNNLSdata`:
 
 ```{r, eval=F}
-devtools::install_github("recountNNLSdata")
-devtools::install_github("recountNNLS", build_vignettes=TRUE)
+devtools::install_github("jmf47/recountNNLSdata")
+devtools::install_github("jmf47/recountNNLS", build_vignettes=TRUE)
 ```
 
 ## Quantifying Samples on recount2
