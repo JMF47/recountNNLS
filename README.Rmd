@@ -6,9 +6,8 @@ This pacakge provides an interface to estimate transcript abundances of any samp
 Prior to the installation of `recountNNLS` please install the companion data package `recountNNLSdata`:
 
 ```{r, eval=F}
-source("https://bioconductor.org/biocLite.R")
-dev_tools::install_github("recountNNLSdata")
-dev_tools::install_github("recountNNLS", build_vignettes=TRUE)
+devtools::install_github("recountNNLSdata")
+devtools::install_github("recountNNLS", build_vignettes=TRUE)
 ```
 
 ## Quantifying Samples on recount2
