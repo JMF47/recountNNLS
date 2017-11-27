@@ -8,7 +8,7 @@ Prior to the installation of `recountNNLS` please install the companion data pac
 ```{r, eval=F}
 source("https://bioconductor.org/biocLite.R")
 dev_tools::install_github("recountNNLSdata")
-dev_tools::biocLite("recountNNLS", build_vignettes=TRUE)
+dev_tools::install_github("recountNNLS", build_vignettes=TRUE)
 ```
 
 ## Quantifying Samples on recount2
