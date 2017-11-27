@@ -11,6 +11,8 @@ Depends: R (>= 3.3.1),
       nnls
 Imports: recount,
       rtracklayer
+Suggests: knitr, rmarkdown
+VignetteBuilder: knitr
 License: Artistic-2.0
 Encoding: UTF-8
 LazyData: true
