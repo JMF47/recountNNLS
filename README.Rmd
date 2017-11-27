@@ -29,7 +29,7 @@ counts_ex = getExCounts(pheno)
 counts_jx = getJxCounts(project)
 
 ## Main NNLS workhorse function to create a RSE of transcript abundance
-rse_tx = recountNNLS(pheno, counts_ex, counts_jx, cores=1)
+rse_tx = recountNNLS(pheno, counts_ex, counts_jx)
 
 ```
 ## Data Not Yet Part of recount2
