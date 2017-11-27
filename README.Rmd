@@ -7,7 +7,7 @@ output: html_document
 
 ## Overview
 
-This pacakge provides an interface to apply non-negative least squares (NNLS) towards the estimation of transcript abundances using compressed coverage statistics output by the aligner  *rail*. All of the SRA projects quantified by *rail* and compiled by the *recount2* project can be directly quantified by inputing just the *Sequencing Read Archive* (SRA) project name. Otherwise, users can supply some necessary information as outlined below.
+This pacakge provides an interface to estimate transcript abundances of any samples quantified by the aligner *rail*. This method is a non-negative least squares (NNLS) estimation that calculates the number of reads that originated from each transcript of the coding portion of the GencodeV25 transcriptome. The model does not require raw aligned `bam` files, but is content with compressed coverage statistics primarily stored in `bigwig` formats. 
 
 ## Installation
 Prior to the installation of `recountNNLS` please install the companion data package `recountNNLSdata`:
