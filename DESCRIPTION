@@ -6,12 +6,12 @@ Author: Jack Fu <jmfu@jhsph.edu>
 Description: This pacakge provides an interface to estimate transcript abundances of any samples quantified by the aligner rail. This method is a non negative least squares estimation that calculates the number of reads that originated from each transcript of the coding portion of the GencodeV25 transcriptome. The model does not require raw aligned bam files, but is content with compressed coverage statistics primarily stored in bigwig formats.
 Depends: R (>= 3.3.1),
       recountNNLSdata,
-      nnls
-Imports: recount,
-      rtracklayer,
-      stringr,
+      nnls,
       GenomicRanges,
       SummarizedExperiment
+Imports: recount,
+      rtracklayer,
+      stringr
 Suggests: knitr
 VignetteBuilder: knitr
 License: Artistic-2.0
