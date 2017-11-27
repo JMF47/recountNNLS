@@ -43,9 +43,7 @@ The output of `recountNNLS()` is a `RangeSummarizedExperiment` where:
 * Each row corresponds to a transcript
 * Each column corresponds to a run (sample)
 * `rowRanges()` can be used to access a `GRangesList` annotation of the transcripts
-* `assays()` returns a list of length 2 that can be access with `$`
-      + Using `$counts` returns a matrix of estimated transcript abundance on a number of reads scale
-      + Using `$se` returns a matrix of estimated standard error of the abundance
+* `assays()` returns a list of length 2 that can be access with `$`. `$counts` returns a matrix of estimated transcript abundance on a number of reads scale. Using `$se` returns a matrix of estimated standard error of the abundance
 
 
 
