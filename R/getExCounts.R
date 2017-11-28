@@ -14,11 +14,9 @@ getExCounts = function(pheno){
 
       ## Load appropriate features based on read count
       data(list=paste0("bins_", rl), package = "recountNNLSdata")
+      bins <- eval(parse(text=paste0("bins_", rl)))
 
       ## Create a GRangesList by chr
-      # grl = GRangesList()
-      # for(chr in unique(seqnames(bins)))
-      #       grl[[chr]] = bins[seqnames(bins)==chr]
       grl = GenomicRanges::split(bins, seqnames(bins))
 
       ## Counting the coverage of exonic features by file

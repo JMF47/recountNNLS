@@ -18,6 +18,7 @@ recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
       if(length(rl)>1)
             stop("Cannot process two different read group lengths at the same time. Please split analysis.")
       data(list=paste0("matrix_", rl), package = "recountNNLSdata")
+      matrix_list <- eval(parse(text=paste0("matrix_", rl)))
       genes = names(matrix_list)
 
       ## Run the NNLS
@@ -39,7 +40,7 @@ recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
 
       ## Wrap up results in a RSE
       data(tx_grl, package = "recountNNLSdata")
-      rowRanges = rng[match(rownames(reads), names(rng))]
+      rowRanges = tx_grl[match(rownames(reads), names(tx_grl))]
       rownames(se) = NULL; colnames(se) = NULL
       rownames(reads) = NULL; colnames(reads) = pheno$run
       rse_tx = SummarizedExperiment(assays=list(counts=reads, se=se), rowRanges=rowRanges, colData=pheno)
