@@ -6,7 +6,7 @@
 #' @param pheno The phenotype matrix created by processPheno().
 #' @keywords getExCounts
 #' @export
-getExCounts = function(pheno){
+getExCounts = function(pheno, cores=1){
       ## Evaluate the consistency of read lengths supplied in phenotype
       rl = unique(pheno$rls_group)
       if(length(rl)>1)
@@ -20,7 +20,10 @@ getExCounts = function(pheno){
       grl = GenomicRanges::split(bins, seqnames(bins))
 
       ## Counting the coverage of exonic features by file
-      list_totCov= lapply(pheno$bigwig_path, .processSample, grl, bins)
+      if(cores>1)
+            list_totCov = mclapply(as.character(pheno$bigwig_path), .processSample, grl, bins, mc.cores=cores)
+      else
+            list_totCov= lapply(as.character(pheno$bigwig_path), .processSample, grl, bins)
       ## Assembling the count information
       totCov = do.call(cbind, list_totCov)
       ## Giving correct exonic feature annotation

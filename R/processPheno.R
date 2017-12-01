@@ -25,6 +25,8 @@ processPheno = function(input){
             pheno = input
       }
       rls_avail = c(37, 50, 75, 100, 150)
+      paired = pheno$paired_end*1+1
+      pheno$avg_read_length = pheno$avg_read_length/paired
       pheno$rls_group = sapply(pheno$avg_read_length, function(x) rls_avail[which.min(abs(rls_avail-x))])
       return(pheno)
 }
