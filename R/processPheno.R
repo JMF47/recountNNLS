@@ -26,7 +26,8 @@ processPheno = function(input){
       }
       rls_avail = c(37, 50, 75, 100, 150)
       paired = pheno$paired_end*1+1
-      pheno$rls_group = sapply((pheno$avg_read_length/paired), function(x) rls_avail[which.min(abs(rls_avail-x))])
+      pheno$rls = (pheno$avg_read_length/paired)
+      pheno$rls_group = sapply(pheno$rls, function(x) rls_avail[which.min(abs(rls_avail-x))])
       return(pheno)
 }
 
