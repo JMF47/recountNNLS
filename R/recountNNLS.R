@@ -24,7 +24,8 @@ recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
       ## Run the NNLS
       info = mclapply(genes, .calculateReads, matrix_list, counts, junction_weight=rl, power=1, mc.cores = cores)
       reads = do.call(rbind, sapply(info, function(x)x[[1]]))
-            norm_matrix = matrix(rep(as.numeric(pheno$avg_read_length), times = dim(reads)[1]), byrow=T, ncol = dim(reads)[2])
+            paired = pheno$paired_end*1+1
+            norm_matrix = matrix(rep(as.numeric(pheno$avg_read_length)/paired, times = dim(reads)[1]), byrow=T, ncol = dim(reads)[2])
             norm_matrix = rl/norm_matrix
             reads = reads*norm_matrix
       vars = do.call(rbind, sapply(info, function(x) x[[2]]))
