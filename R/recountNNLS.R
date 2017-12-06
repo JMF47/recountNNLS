@@ -22,7 +22,8 @@ recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
       genes = names(matrix_list)
 
       ## Run the NNLS
-      info = mclapply(genes, .calculateReads, matrix_list, counts, junction_weight=rl, power=1, mc.cores = cores)
+      # info = mclapply(genes, .calculateReads, matrix_list, counts, junction_weight=rl, power=1, mc.cores = cores)
+      info = mclapply(unique(g2l$locus), .calculateReads2, g2l, matrix_list, counts, junction_weight=rl, power=1, mc.cores = cores)
       reads = do.call(rbind, sapply(info, function(x)x[[1]]))
             norm_matrix = matrix(rep(as.numeric(pheno$rls), times = dim(reads)[1]), byrow=T, ncol = dim(reads)[2])
             norm_matrix = rl/norm_matrix
@@ -111,6 +112,77 @@ recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
       }
       return(list(b, Vb, colinear_info))
 }
+.calculateReads2 = function(locus, g2l, ems, counts, junction_weight, power){
+      message(locus)
+      b = NULL; Vb = NULL; colinear_info = NULL
+      genes = as.character(g2l$gene[g2l$locus==locus])
+      ems_sub = ems[match(genes, names(ems))]
+            ems_sub = ems_sub[sapply(ems_sub, length)>0]
+      if(length(ems_sub)>1)
+            P = .mergeP(ems_sub)
+      if(length(ems_sub)==1)
+            P = ems_sub[[1]]
+
+      ## If the emission matrix is not empty
+      if(length(P)>0){
+            mat = match(rownames(P), rownames(counts))
+            P_size_orig = dim(P)[2]
+            if(sum(!is.na(mat))>0){
+                  ## Determine weighting of the uniqueness of features
+                  P = P[which(!is.na(mat)),,drop=FALSE]
+                  P_binary = P>0
+                  P_bin_sum = apply(P_binary, 1, sum)
+                  P_weight = 1/P_bin_sum^power
+                  counts_sub = counts[mat[!is.na(mat)],, drop=FALSE]
+                  counts_sub = counts_sub*P_weight
+                  P = P*P_weight
+
+                  ## Rescale the weight of the junctions
+                  junction_ind = stringr::str_detect(rownames(counts_sub), "i")
+                  P_weight2 = junction_ind*(junction_weight-1)+1
+                  counts_sub = counts_sub*P_weight2
+                  P = P*P_weight2
+
+                  ## Quantification
+                  colinear_info = NULL
+                  if(dim(P)[2]>1){ ## More than 1 isoform at this location
+                        ## Use lm to assist in calculating colinearity and SE
+                        lm_info = matrix(apply(counts_sub, 2, .llm, P))
+                        beta = sapply(lm_info, function(x) x[[1]])
+                        Vbeta = sapply(lm_info, function(x) x[[2]])^2
+                        colinear = which(colnames(P) %in% rownames(beta)==F)
+                        if(length(colinear)>0){ ## If there are colinear transcripts
+                              colinear_tx = colnames(P)[colinear]
+                              P = P[,-colinear]
+                              colinear_info = data.frame(locus_id=locus, transcript_id = colinear_tx,
+                                                         P_dim=P_size_orig, P_colin=length(colinear))
+                        }
+                        if(dim(P)[2]>1){ ## If there are non-colinear transcripts
+                              b = matrix(apply(counts_sub, 2, .lnnls, P), nrow=dim(P)[2])
+                              rownames(b) = colnames(P)
+                              d = (1+(b-beta))
+                              Vb = d^2*Vbeta
+                        }else{ ## If all isoforms are colinear
+                              b = NULL
+                              Vb = NULL
+                        }
+                  }else{ ## Just 1 isoform at this location
+                        b = matrix(apply(counts_sub, 2, .lnnls, P), nrow=dim(P)[2])
+                        rownames(b) = colnames(P)
+                        beta = b
+                        P = apply(P, 2, as.numeric)
+                        fitted = P%*% beta
+                        res = counts_sub-fitted
+                        res2sum = apply(res, 2, function(x) sum(x^2))
+                        Vb = res2sum/(dim(res)[1]-1)
+                        Vb = matrix(Vb, nrow=1)
+                        rownames(Vb) = colnames(P)
+                  }
+
+            }
+      }
+      return(list(b, Vb, colinear_info))
+}
 
 ## Wrapper function for lm
 .llm = function(data, matrix){
@@ -128,3 +200,17 @@ recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
       return(out)
 }
 
+## Wrapper function to combine emission matrices by locus
+.mergeP = function(P_list){
+      for(i in 1:length(P_list)){
+            P_list[[i]]$rn = rownames(P_list[[i]])
+      }
+      P_out = P_list[[1]]
+      for(i in 2:length(P_list)){
+            P_out = merge(P_out, P_list[[i]], by="rn", all=T)
+      }
+      P_out[is.na(P_out)] = 0
+      rownames(P_out) = P_out$rn
+      P_out$rn = NULL
+      return(P_out)
+}
