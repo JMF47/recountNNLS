@@ -19,10 +19,13 @@ recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
             stop("Cannot process two different read group lengths at the same time. Please split analysis.")
       data(list=paste0("matrix_", rl), package = "recountNNLSdata")
       matrix_list <- eval(parse(text=paste0("matrix_", rl)))
-      genes = names(matrix_list)
+      # genes = names(matrix_list)
 
       ## Run the NNLS
       # info = mclapply(genes, .calculateReads, matrix_list, counts, junction_weight=rl, power=1, mc.cores = cores)
+      # for(i in seq(9, 15000, by=20)){
+      #       .calculateReads2(unique(g2l$locus)[i], g2l, matrix_list, counts, rl, 1)
+      # }
       info = mclapply(unique(g2l$locus), .calculateReads2, g2l, matrix_list, counts, junction_weight=rl, power=1, mc.cores = cores)
       reads = do.call(rbind, sapply(info, function(x)x[[1]]))
             norm_matrix = matrix(rep(as.numeric(pheno$rls), times = dim(reads)[1]), byrow=T, ncol = dim(reads)[2])
@@ -122,6 +125,8 @@ recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
             P = .mergeP(ems_sub)
       if(length(ems_sub)==1)
             P = ems_sub[[1]]
+      if(length(ems_sub)==0)
+            P = NULL
 
       ## If the emission matrix is not empty
       if(length(P)>0){
