@@ -11,9 +11,11 @@
 #' @export
 recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
       ## Stack the counts matrix for input
+      message("Combining exon and junction counts")
       counts = rbind(counts_ex, counts_jx)
 
       ## Load emission probability matrices
+      message("Setting up model covariates")
       rl = unique(pheno$rls_group)
       if(length(rl)>1)
             stop("Cannot process two different read group lengths at the same time. Please split analysis.")
@@ -22,11 +24,10 @@ recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
       # genes = names(matrix_list)
 
       ## Run the NNLS
-      # info = mclapply(genes, .calculateReads, matrix_list, counts, junction_weight=rl, power=1, mc.cores = cores)
-      # for(i in seq(9, 15000, by=20)){
-      #       .calculateReads2(unique(g2l$locus)[i], g2l, matrix_list, counts, rl, 1)
-      # }
+      message("Executing model")
       info = mclapply(unique(g2l$locus), .calculateReads2, g2l, matrix_list, counts, junction_weight=rl, power=1, mc.cores = cores)
+
+      message("Compiling information")
       reads = do.call(rbind, sapply(info, function(x)x[[1]]))
             norm_matrix = matrix(rep(as.numeric(pheno$rls), times = dim(reads)[1]), byrow=T, ncol = dim(reads)[2])
             norm_matrix = rl/norm_matrix
@@ -43,6 +44,7 @@ recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
       se = rbind(se, colin_mat)
 
       ## Wrap up results in a RSE
+      message("Wrap up results in RSE")
       data(tx_grl, package = "recountNNLSdata")
       rowRanges = tx_grl[match(rownames(reads), names(tx_grl))]
       rownames(se) = NULL; colnames(se) = NULL
