@@ -117,8 +117,9 @@ recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
       }
       return(list(b, Vb, colinear_info))
 }
-.calculateReads2 = function(locus, g2l, ems, counts, junction_weight, power){
-      message(locus)
+.calculateReads2 = function(locus, g2l, ems, counts, junction_weight, power, verbose=F){
+      if(verbose==T)
+            message(locus)
       b = NULL; Vb = NULL; colinear_info = NULL
       genes = as.character(g2l$gene[g2l$locus==locus])
       ems_sub = ems[match(genes, names(ems))]
