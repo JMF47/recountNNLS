@@ -18,11 +18,11 @@ To use our NNLS model on the samples on recount2, all one needs is the SRA proje
 library(recountNNLS)
 
 ## Specify a SRA project and download the relevant path data from recount2
-project = 'SRP063581' # SRP040442 # ERP001942
+project = 'SRP063581'
 pheno = processPheno(project)
 
 ## Compile the coverage of the relevant exonic segments
-counts_ex = getExCounts(pheno[295:305,])
+counts_ex = getExCounts(pheno)
 
 ## Compile the coverage of the relevant junctions
 counts_jx = getJxCounts(project)
