@@ -22,14 +22,14 @@ To use our NNLS model on the samples on recount2, all one needs is the SRA proje
 library(recountNNLS)
 
 ## Specify a SRA project and download the relevant path data from recount2
-project = 'SRP063581'
+project = 'SRP063581' # SRP042616
 pheno = processPheno(project)
 
 ## Compile the coverage of the relevant exonic segments
-counts_ex = getExCounts(pheno)
+
 
 ## Compile the coverage of the relevant junctions
-counts_jx = getJxCounts(project)
+
 
 ## Main NNLS workhorse function to create a RSE of transcript abundance
 rse_tx = recountNNLS(pheno, counts_ex, counts_jx, cores=1)

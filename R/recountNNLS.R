@@ -5,35 +5,46 @@
 #' and getJxCounts().
 #' @param pheno The table of phenotype information from processPheno().
 #' @param cores The number of processing cores to use.
-#' @param counts_ex The counts of exonic features from getExCounts().
-#' @param counts_jx The counts of junctions from getJxCounts().
 #' @keywords recountNNLS
 #' @export
-recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
-      ## Stack the counts matrix for input
-      message("Combining exon and junction counts")
-      counts = rbind(counts_ex, counts_jx)
+recountNNLS = function(pheno, cores=1){
+      rls = unique(pheno$rls_group)
+      message("##### There are ", length(rls), " read length groups")
+
+      counts_jx = getJxCounts(project)
+      rse_list = lapply(rls, .getRse, pheno, counts_jx, cores)
+
+      message("Processing all RSEs")
+      rse = do.call(cbind, rse_list)
+      return(rse)
+}
+
+## Make rese fo one rls_group at a time
+.getRse = function(rl, pheno, counts_jx, cores){
+      message(paste0("### Processing read length group: ", rl))
+      pheno = pheno[pheno$rls_group==rl,,drop=F]
+
+      ## Create the appropriate count matrix
+      message("# Compiling feature counts")
+      counts_ex = getExCounts(pheno)
+      counts = rbind(counts_ex, counts_jx[, match(colnames(counts_ex), colnames(counts_jx))])
 
       ## Load emission probability matrices
-      message("Setting up model covariates")
-      rl = unique(pheno$rls_group)
-      if(length(rl)>1)
-            stop("Cannot process two different read group lengths at the same time. Please split analysis.")
+      message("# Setting up model covariates")
       data(list=paste0("matrix_", rl), package = "recountNNLSdata")
       matrix_list <- eval(parse(text=paste0("matrix_", rl)))
-      # genes = names(matrix_list)
 
       ## Run the NNLS
-      message("Executing model")
+      message("# Executing model")
       info = mclapply(unique(g2l$locus), .calculateReads2, g2l, matrix_list, counts, junction_weight=rl, power=1, mc.cores = cores)
 
-      message("Compiling information")
+      message("# Compiling regression information")
       reads = do.call(rbind, sapply(info, function(x)x[[1]]))
-            norm_matrix = matrix(rep(as.numeric(pheno$rls), times = dim(reads)[1]), byrow=T, ncol = dim(reads)[2])
-            norm_matrix = rl/norm_matrix
-            reads = reads*norm_matrix
+      norm_matrix = matrix(rep(as.numeric(pheno$rls), times = dim(reads)[1]), byrow=T, ncol = dim(reads)[2])
+      norm_matrix = rl/norm_matrix
+      reads = reads*norm_matrix
       vars = do.call(rbind, sapply(info, function(x) x[[2]]))
-            vars = vars*norm_matrix^2
+      vars = vars*norm_matrix^2
       colin = do.call(rbind, sapply(info, function(x) x[[3]]))
       se = sqrt(apply(vars, 2, as.numeric))
 
@@ -42,17 +53,22 @@ recountNNLS = function(pheno, counts_ex, counts_jx, cores=1){
       rownames(colin_mat) = colin$transcript_id
       reads = rbind(reads, colin_mat)
       se = rbind(se, colin_mat)
+            rownames(se) = rownames(reads)
 
       ## Wrap up results in a RSE
-      message("Wrap up results in RSE")
+      message("# Wrap up results in RSE")
       data(tx_grl, package = "recountNNLSdata")
-      rowRanges = tx_grl[match(rownames(reads), names(tx_grl))]
-      rownames(se) = NULL; colnames(se) = NULL
+      unquantified = names(tx_grl)[names(tx_grl) %in% rownames(reads)==F]
+      uq_info = matrix(0, ncol = ncol(reads), nrow=length(unquantified))
+      reads = rbind(reads, uq_info); se = rbind(se, uq_info)
+      ind = match(names(tx_grl), rownames(reads))
+            reads = reads[ind,]; se = se[ind,]
+
+      rownames(se) = NULL; colnames(se) = pheno$run
       rownames(reads) = NULL; colnames(reads) = pheno$run
-      rse_tx = SummarizedExperiment(assays=list(counts=reads, se=se), rowRanges=rowRanges, colData=pheno)
+      rse_tx = SummarizedExperiment(assays=list(counts=reads, se=se), rowRanges=tx_grl, colData=pheno)
       return(rse_tx)
 }
-
 ## Gene-wise execution of NNLS
 .calculateReads = function(gene, ems, counts, junction_weight, power){
       b = NULL; Vb = NULL; colinear_info = NULL
