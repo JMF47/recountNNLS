@@ -69,6 +69,7 @@ recountNNLS = function(pheno, cores=1){
       rse_tx = SummarizedExperiment(assays=list(counts=reads, se=se), rowRanges=tx_grl, colData=pheno)
       return(rse_tx)
 }
+
 ## Gene-wise execution of NNLS
 .calculateReads = function(gene, ems, counts, junction_weight, power){
       b = NULL; Vb = NULL; colinear_info = NULL
