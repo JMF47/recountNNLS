@@ -21,7 +21,7 @@ recountNNLS = function(pheno, counts_ex=NULL, counts_jx=NULL, cores=1){
 }
 
 ## Make rese fo one rls_group at a time
-.getRse = function(rl, pheno, counts_jx, counts_jx, cores){
+.getRse = function(rl, pheno, counts_ex, counts_jx, cores){
       message(paste0("### Processing read length group: ", rl))
       pheno = pheno[pheno$rls_group==rl,,drop=F]
 

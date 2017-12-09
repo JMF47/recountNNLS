@@ -4,7 +4,7 @@
 \alias{getExCounts}
 \title{Obtain Exonic Feature Counts}
 \usage{
-getExCounts(pheno)
+getExCounts(pheno, cores = 1)
 }
 \arguments{
 \item{pheno}{The phenotype matrix created by processPheno().}

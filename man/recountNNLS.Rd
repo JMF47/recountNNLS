@@ -4,14 +4,10 @@
 \alias{recountNNLS}
 \title{NNLS for Tx Abundance Calculation}
 \usage{
-recountNNLS(pheno, counts_ex, counts_jx, cores = 1)
+recountNNLS(pheno, counts_ex = NULL, counts_jx = NULL, cores = 1)
 }
 \arguments{
 \item{pheno}{The table of phenotype information from processPheno().}
-
-\item{counts_ex}{The counts of exonic features from getExCounts().}
-
-\item{counts_jx}{The counts of junctions from getJxCounts().}
 
 \item{cores}{The number of processing cores to use.}
 }
