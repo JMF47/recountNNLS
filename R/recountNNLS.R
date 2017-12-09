@@ -7,12 +7,13 @@
 #' @param cores The number of processing cores to use.
 #' @keywords recountNNLS
 #' @export
-recountNNLS = function(pheno, cores=1){
+recountNNLS = function(pheno, counts_ex=NULL, counts_jx=NULL, cores=1){
       rls = unique(pheno$rls_group)
       message("##### There are ", length(rls), " read length groups")
 
-      counts_jx = getJxCounts(project)
-      rse_list = lapply(rls, .getRse, pheno, counts_jx, cores)
+      if(is.null(counts_jx))
+            counts_jx = getJxCounts(project)
+      rse_list = lapply(rls, .getRse, pheno, counts_ex, counts_jx, cores)
 
       message("Processing all RSEs")
       rse = do.call(cbind, rse_list)
@@ -20,13 +21,14 @@ recountNNLS = function(pheno, cores=1){
 }
 
 ## Make rese fo one rls_group at a time
-.getRse = function(rl, pheno, counts_jx, cores){
+.getRse = function(rl, pheno, counts_jx, counts_jx, cores){
       message(paste0("### Processing read length group: ", rl))
       pheno = pheno[pheno$rls_group==rl,,drop=F]
 
       ## Create the appropriate count matrix
       message("# Compiling feature counts")
-      counts_ex = getExCounts(pheno)
+      if(is.null(counts_ex))
+            counts_ex = getExCounts(pheno)
       counts = rbind(counts_ex, counts_jx[, match(colnames(counts_ex), colnames(counts_jx))])
 
       ## Load emission probability matrices
