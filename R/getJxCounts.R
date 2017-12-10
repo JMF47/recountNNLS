@@ -6,7 +6,7 @@
 #' the path to the rail output file containing junction information of the form 'cross_sample_results/junctions.tsv.gz'.
 #' @keywords getJxCounts
 #' @export
-getJxCounts = function(input){
+getJxCounts = function(input, local=F){
       message("# Getting junction counts")
       data(gff_jx, package="recountNNLSdata")
       url_table <- recount::recount_url
@@ -14,8 +14,12 @@ getJxCounts = function(input){
       ## If input is a SRA project name compiled in recount2
       if(input %in% unique(url_table$project)){
             ## Download the junction file
-            rse_jx_file = recount::download_study(input, type = 'rse-jx', download = FALSE)
-            load(url(rse_jx_file))
+            if(local==F){
+                  rse_jx_file = recount::download_study(input, type = 'rse-jx', download = FALSE)
+                  load(url(rse_jx_file))
+            }else{
+                  load(url_table$path[url_table$project==input & url_table$file_name=='rse_jx.Rdata'])
+            }
 
             ## Look for junctions matching reference junctions
             ol = findOverlaps(gff_jx, rowRanges(rse_jx), type="equal")
@@ -25,6 +29,7 @@ getJxCounts = function(input){
             counts_jx = assays(rse_jx[, match(pheno$run, colnames(rse_jx))])$counts
             if(dim(counts_jx)[1]>0)
                   rownames(counts_jx) = paste0("i", queryHits(ol))
+            rm(rse_jx)
       ## Input is the path to the junction coverage file from rail
       }else{
             ## Read junction table and parse information

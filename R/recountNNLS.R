@@ -7,13 +7,13 @@
 #' @param cores The number of processing cores to use.
 #' @keywords recountNNLS
 #' @export
-recountNNLS = function(pheno, jx_file=NULL, counts_ex=NULL, counts_jx=NULL, cores=1){
+recountNNLS = function(pheno, jx_file=NULL, local=F, counts_ex=NULL, counts_jx=NULL, cores=1){
       rls = unique(pheno$rls_group)
       message("##### There are ", length(rls), " read length groups")
 
       if(is.null(counts_jx)){
             if(is.null(jx_file)){
-                  counts_jx = getJxCounts(unique(pheno$project))
+                  counts_jx = getJxCounts(unique(pheno$project), local=local)
             }else{
                   counts_jx = getJxCounts(jx_file)
             }
@@ -22,6 +22,11 @@ recountNNLS = function(pheno, jx_file=NULL, counts_ex=NULL, counts_jx=NULL, core
 
       message("## Processing all RSEs")
       output = do.call(SummarizedExperiment::cbind, rse_list)
+
+      if(local==T){
+            pheno = processPheno(unique(pheno$project))
+            colData(output)$bigwig_path = pheno$bigwig_path
+      }
       return(output)
 }
 

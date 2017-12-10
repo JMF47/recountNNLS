@@ -26,7 +26,7 @@ project = 'SRP063581' #
 pheno = processPheno(project)
 
 ## Main NNLS workhorse function to create a RSE of transcript abundance
-rse_tx = recountNNLS(pheno, cores=1)
+rse_tx = recountNNLS(pheno)
 
 ```
 ## Data Not Yet Part of recount2
