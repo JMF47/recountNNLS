@@ -7,6 +7,7 @@
 #' @keywords getJxCounts
 #' @export
 getJxCounts = function(input){
+      message("# Getting junction counts")
       data(gff_jx, package="recountNNLSdata")
       url_table <- recount::recount_url
 

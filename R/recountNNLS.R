@@ -15,7 +15,7 @@ recountNNLS = function(pheno, counts_ex=NULL, counts_jx=NULL, cores=1){
             counts_jx = getJxCounts(project)
       rse_list = lapply(rls, .getRse, pheno, counts_ex, counts_jx, cores)
 
-      message("Processing all RSEs")
+      message("## Processing all RSEs")
       rse = do.call(cbind, rse_list)
       return(rse)
 }
