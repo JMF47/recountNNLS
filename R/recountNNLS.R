@@ -72,7 +72,7 @@ recountNNLS = function(pheno, jx_file=NULL, counts_ex=NULL, counts_jx=NULL, core
       uq_info = matrix(0, ncol = ncol(reads), nrow=length(unquantified))
       reads = rbind(reads, uq_info); se = rbind(se, uq_info)
       ind = match(names(tx_grl), rownames(reads))
-            reads = reads[ind,]; se = se[ind,]
+            reads = reads[ind,,drop=F]; se = se[ind,,drop=F]
 
       rownames(se) = NULL; colnames(se) = pheno$run
       rownames(reads) = NULL; colnames(reads) = pheno$run
