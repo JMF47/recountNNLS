@@ -33,7 +33,7 @@ recountNNLS = function(pheno, jx_file=NULL, counts_ex=NULL, counts_jx=NULL, core
       ## Create the appropriate count matrix
       message("# Compiling feature counts")
       if(is.null(counts_ex))
-            counts_ex = getExCounts(pheno)
+            counts_ex = getExCounts(pheno, cores = cores)
       counts = rbind(counts_ex, counts_jx[, match(colnames(counts_ex), colnames(counts_jx)), drop=F])
 
       ## Load emission probability matrices
