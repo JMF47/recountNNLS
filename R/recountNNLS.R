@@ -12,7 +12,7 @@ recountNNLS = function(pheno, counts_ex=NULL, counts_jx=NULL, cores=1){
       message("##### There are ", length(rls), " read length groups")
 
       if(is.null(counts_jx))
-            counts_jx = getJxCounts(project)
+            counts_jx = getJxCounts(pheno)
       rse_list = lapply(rls, .getRse, pheno, counts_ex, counts_jx, cores)
 
       message("## Processing all RSEs")
