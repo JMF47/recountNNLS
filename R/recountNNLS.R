@@ -17,15 +17,12 @@ recountNNLS = function(pheno, jx_file=NULL, counts_ex=NULL, counts_jx=NULL, core
             }else{
                   counts_jx = getJxCounts(jx_file)
             }
-
       }
       rse_list = lapply(rls, .getRse, pheno, counts_ex, counts_jx, cores)
 
-      test = list(rse_list, do.call(cbind, rse_list))
-      return(test)
-
       message("## Processing all RSEs")
-      return(do.call(cbind, rse_list))
+      output = do.call(SummarizedExperiment::cbind, rse_list)
+      return(output)
 }
 
 ## Make rese fo one rls_group at a time
