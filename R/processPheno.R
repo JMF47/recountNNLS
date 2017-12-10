@@ -21,6 +21,7 @@ processPheno = function(input){
             # Read phenotype and process into different rl groups where applicable
             pheno <- .read_pheno(phenoFile, project)
             pheno$bigwig_path = url_table$url[match(pheno$bigwig_file, url_table$file_name)]
+            pheno = pheno[!is.na(pheno$bigwig_path),]
       }else{
             pheno = input
       }
