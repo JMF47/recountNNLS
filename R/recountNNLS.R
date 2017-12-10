@@ -21,6 +21,9 @@ recountNNLS = function(pheno, jx_file=NULL, counts_ex=NULL, counts_jx=NULL, core
       }
       rse_list = lapply(rls, .getRse, pheno, counts_ex, counts_jx, cores)
 
+      test = list(rse_list, do.call(cbind, rse_list))
+      return(test)
+
       message("## Processing all RSEs")
       return(do.call(cbind, rse_list))
 }
