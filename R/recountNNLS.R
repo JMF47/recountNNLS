@@ -7,12 +7,18 @@
 #' @param cores The number of processing cores to use.
 #' @keywords recountNNLS
 #' @export
-recountNNLS = function(pheno, counts_ex=NULL, counts_jx=NULL, cores=1){
+recountNNLS = function(pheno, jx_file=NULL, counts_ex=NULL, counts_jx=NULL, cores=1){
       rls = unique(pheno$rls_group)
       message("##### There are ", length(rls), " read length groups")
 
-      if(is.null(counts_jx))
-            counts_jx = getJxCounts(pheno)
+      if(is.null(counts_jx)){
+            if(is.null(jx_file)){
+                  counts_jx = getJxCounts(unique(pheno$project))
+            }else{
+                  counts_jx = getJxCounts(jx_file)
+            }
+
+      }
       rse_list = lapply(rls, .getRse, pheno, counts_ex, counts_jx, cores)
 
       message("## Processing all RSEs")
