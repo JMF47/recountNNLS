@@ -21,14 +21,8 @@ library(recountNNLS)
 project = 'SRP063581'
 pheno = processPheno(project)
 
-## Compile the coverage of the relevant exonic segments
-counts_ex = getExCounts(pheno)
-
-## Compile the coverage of the relevant junctions
-counts_jx = getJxCounts(project)
-
 ## Main NNLS workhorse function to create a RSE of transcript abundance
-rse_tx = recountNNLS(pheno, counts_ex, counts_jx)
+rse_tx = recountNNLS(pheno)
 
 ```
 ## Data Not Yet Part of recount2
