@@ -9,7 +9,7 @@
 #' @export
 recountNNLS = function(pheno, jx_file=NULL, local=F, counts_ex=NULL, counts_jx=NULL, cores=1){
       rls = unique(pheno$rls_group)
-      message("##### There are ", length(rls), " read length groups")
+      message(Sys.time(), " ##### There are ", length(rls), " read length groups")
 
       if(is.null(counts_jx)){
             if(is.null(jx_file)){
@@ -20,7 +20,7 @@ recountNNLS = function(pheno, jx_file=NULL, local=F, counts_ex=NULL, counts_jx=N
       }
       rse_list = lapply(rls, .getRse, pheno, counts_ex, counts_jx, cores)
 
-      message("## Processing all RSEs")
+      message(Sys.time(), " ## Processing all RSEs")
       output = do.call(SummarizedExperiment::cbind, rse_list)
 
       if(local==T){
@@ -30,27 +30,31 @@ recountNNLS = function(pheno, jx_file=NULL, local=F, counts_ex=NULL, counts_jx=N
       return(output)
 }
 
-## Make rese fo one rls_group at a time
+## Make rse fo one rls_group at a time
 .getRse = function(rl, pheno, counts_ex, counts_jx, cores){
-      message(paste0("### Processing read length group: ", rl))
+      message(Sys.time(), paste0(" ### Processing read length group: ", rl))
       pheno = pheno[pheno$rls_group==rl,,drop=F]
 
       ## Create the appropriate count matrix
-      message("# Compiling feature counts")
+      message(Sys.time(), " # Compiling feature counts")
       if(is.null(counts_ex))
             counts_ex = getExCounts(pheno, cores = cores)
-      counts = rbind(counts_ex, counts_jx[, match(colnames(counts_ex), colnames(counts_jx)), drop=F])
+      if(!is.null(counts_jx)){
+            counts = rbind(counts_ex, counts_jx[, match(colnames(counts_ex), colnames(counts_jx)), drop=F])
+      }else{
+            counts = counts_ex
+      }
 
       ## Load emission probability matrices
-      message("# Setting up model covariates")
+      message(Sys.time(), " # Setting up model covariates")
       data(list=paste0("matrix_", rl), package = "recountNNLSdata")
       matrix_list <- eval(parse(text=paste0("matrix_", rl)))
 
       ## Run the NNLS
-      message("# Executing model")
+      message(Sys.time(), " # Executing model")
       info = mclapply(unique(g2l$locus), .calculateReads2, g2l, matrix_list, counts, junction_weight=rl, power=1, mc.cores = cores)
 
-      message("# Compiling regression information")
+      message(Sys.time(), " # Compiling regression information")
       reads = do.call(rbind, sapply(info, function(x)x[[1]]))
       norm_matrix = matrix(rep(as.numeric(pheno$rls), times = dim(reads)[1]), byrow=T, ncol = dim(reads)[2])
       norm_matrix = rl/norm_matrix
@@ -68,7 +72,7 @@ recountNNLS = function(pheno, jx_file=NULL, local=F, counts_ex=NULL, counts_jx=N
             rownames(se) = rownames(reads)
 
       ## Wrap up results in a RSE
-      message("# Wrap up results in RSE")
+      message(Sys.time(), " # Wrap up results in RSE")
       data(tx_grl, package = "recountNNLSdata")
       unquantified = names(tx_grl)[names(tx_grl) %in% rownames(reads)==F]
       uq_info = matrix(0, ncol = ncol(reads), nrow=length(unquantified))

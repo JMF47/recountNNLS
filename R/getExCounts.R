@@ -9,8 +9,6 @@
 getExCounts = function(pheno, cores=1){
       ## Evaluate the consistency of read lengths supplied in phenotype
       rl = unique(pheno$rls_group)
-      if(length(rl)>1)
-            stop("Cannot process two different read group lengths at the same time. Please split analysis.")
 
       ## Load appropriate features based on read count
       data(list=paste0("bins_", rl), package = "recountNNLSdata")
@@ -33,8 +31,9 @@ getExCounts = function(pheno, cores=1){
       return(totCov)
 }
 
-.processSample = function(sampleFile, grl, bins){
-      message("Processing sample ", sampleFile)
+.processSample = function(sampleFile, grl, bins, verbose=T){
+      if(verbose==T)
+            message("Processing sample ", sampleFile)
 
       cov_rle = rtracklayer::import(sampleFile, as = 'RleList')
       ## To ensure consistency when some samples have chrs dropped from no mapped reads
