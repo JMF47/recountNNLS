@@ -6,9 +6,6 @@ vignette: >
   %\VignetteEngine{knitr::knitr}
   %\VignetteIndexEntry{recountNNLS}
   %\usepackage[UTF-8]{inputenc}
-<<style, eval=TRUE, echo=FALSE, results='asis'>>=
-BiocStyle::latex()
-@
 ---
 
 
