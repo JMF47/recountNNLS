@@ -9,7 +9,7 @@
 #' @export
 recountNNLS = function(pheno, jx_file=NULL, local=F, counts_ex=NULL, counts_jx=NULL, cores=1){
       rls = unique(pheno$rls_group)
-      message(Sys.time(), " ##### There are ", length(rls), " read length groups")
+      message(Sys.time(), " ##### There are ", length(rls), " read length groups and ", dim(pheno)[1], " samples")
 
       if(is.null(counts_jx)){
             if(is.null(jx_file)){
@@ -52,7 +52,9 @@ recountNNLS = function(pheno, jx_file=NULL, local=F, counts_ex=NULL, counts_jx=N
 
       ## Run the NNLS
       message(Sys.time(), " # Executing model")
-      info = mclapply(unique(g2l$locus), .calculateReads2, g2l, matrix_list, counts, junction_weight=rl, power=1, mc.cores = cores)
+      # test = .calculateReads(4085, g2l, matrix_list, counts, power=1)
+      # test2 = .calculateReads2(4085, g2l, matrix_list, counts, junction_weight=rl, power=1)
+      info = mclapply(unique(g2l$locus), .calculateReads, g2l, matrix_list, counts, power=1, mc.cores = cores)
 
       message(Sys.time(), " # Compiling regression information")
       reads = do.call(rbind, sapply(info, function(x)x[[1]]))
@@ -87,10 +89,21 @@ recountNNLS = function(pheno, jx_file=NULL, local=F, counts_ex=NULL, counts_jx=N
 }
 
 ## Gene-wise execution of NNLS
-.calculateReads = function(gene, ems, counts, junction_weight, power){
+.calculateReads = function(locus, g2l, ems, counts, power, verbose=F){
+      if(verbose==T)
+            message(locus)
       b = NULL; Vb = NULL; colinear_info = NULL
-      P = ems[[gene]]
-      ## If there emission matrix is not empty
+      genes = as.character(g2l$gene[g2l$locus==locus])
+      ems_sub = ems[match(genes, names(ems))]
+      ems_sub = ems_sub[sapply(ems_sub, length)>0]
+      if(length(ems_sub)>1)
+            P = .mergeP(ems_sub)
+      if(length(ems_sub)==1)
+            P = ems_sub[[1]]
+      if(length(ems_sub)==0)
+            P = NULL
+
+      ## If the emission matrix is not empty
       if(length(P)>0){
             mat = match(rownames(P), rownames(counts))
             P_size_orig = dim(P)[2]
@@ -104,12 +117,6 @@ recountNNLS = function(pheno, jx_file=NULL, local=F, counts_ex=NULL, counts_jx=N
                   counts_sub = counts_sub*P_weight
                   P = P*P_weight
 
-                  ## Rescale the weight of the junctions
-                  junction_ind = stringr::str_detect(rownames(counts_sub), "i")
-                  P_weight2 = junction_ind*(junction_weight-1)+1
-                  counts_sub = counts_sub*P_weight2
-                  P = P*P_weight2
-
                   ## Quantification
                   colinear_info = NULL
                   if(dim(P)[2]>1){ ## More than 1 isoform at this location
@@ -121,7 +128,7 @@ recountNNLS = function(pheno, jx_file=NULL, local=F, counts_ex=NULL, counts_jx=N
                         if(length(colinear)>0){ ## If there are colinear transcripts
                               colinear_tx = colnames(P)[colinear]
                               P = P[,-colinear]
-                              colinear_info = data.frame(gene_id=gene, transcript_id = colinear_tx,
+                              colinear_info = data.frame(locus_id=locus, transcript_id = colinear_tx,
                                                          P_dim=P_size_orig, P_colin=length(colinear))
                         }
                         if(dim(P)[2]>1){ ## If there are non-colinear transcripts

@@ -32,7 +32,7 @@ getJxCounts = function(input, local=F){
                         counts_jx = assays(rse_jx[, match(pheno$run, colnames(rse_jx))])$counts
                         if(dim(counts_jx)[1]>0)
                               rownames(counts_jx) = paste0("i", queryHits(ol))
-                        rm(rse_jx)
+                        return(counts_jx)
                   }
                   return(NULL)
             ## Input is the path to the junction coverage file from rail
