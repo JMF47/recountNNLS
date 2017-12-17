@@ -3,4 +3,5 @@
 export(getExCounts)
 export(getJxCounts)
 export(processPheno)
+export(processReadLength)
 export(recountNNLS)

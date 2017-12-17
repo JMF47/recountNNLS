@@ -4,7 +4,7 @@
 \alias{processPheno}
 \title{Phenotype Information Creation}
 \usage{
-processPheno(input)
+processPheno(input, local = F)
 }
 \arguments{
 \item{input}{The project name from SRA or a manifest file.}
