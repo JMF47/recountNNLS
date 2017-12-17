@@ -9,7 +9,7 @@
 #' @export
 processPheno = function(input, local=F){
       ## If input is of length 1, will interpret as SRA project name
-      if(length(input)==1){
+      if(class(input)=="character"){
             project = input
             url_table <- recount::recount_url
             ## Subset URL Data
@@ -25,17 +25,29 @@ processPheno = function(input, local=F){
             else
                   pheno$bigwig_path = url_table$path[match(pheno$bigwig_file, url_table$file_name)]
             pheno = pheno[!is.na(pheno$bigwig_path),]
+            paired = pheno$paired_end*1+1
+            pheno$rls = (pheno$avg_read_length/paired)
       }else{
             pheno = input
+
+            required_columns = c("project", "run", "bigwig_path", "rls", "paired_end")
+            has_column = sum(required_columns %in% colnames(pheno))
+            if(has_column < length(required_columns))
+                  stop(paste0("Check the columns of your input meet requirements for function: ", paste0(required_columns, collapse=", ")))
+
+            if(class(pheno$paired_end)!="logical")
+                  stop("paired_end must be T/F")
+
+            if(class(pheno$rls)!="numeric")
+                  stop("rls should be numeric")
+
       }
       rls_avail = c(37, 50, 75, 100, 150)
-      paired = pheno$paired_end*1+1
-      pheno$rls = (pheno$avg_read_length/paired)
       pheno$rls_group = sapply(pheno$rls, function(x) rls_avail[which.min(abs(rls_avail-x))])
       return(pheno)
 }
 
-## Helper function for reading the phenotype files
+## Helper function for reading the phenotype files in recount2
 .read_pheno <- function(phenoFile, project) {
       if(project %in% c('SRP012682', 'TCGA')) {
             subsets <- c('SRP012682' = 'gtex', 'TCGA' = 'tcga')

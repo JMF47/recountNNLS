@@ -4,7 +4,7 @@
 \alias{getJxCounts}
 \title{Obtain Exonic Feature Counts}
 \usage{
-getJxCounts(input, local = F)
+getJxCounts(input, pheno, local = F)
 }
 \arguments{
 \item{input}{Either a SRA project name (part of recount2) OR

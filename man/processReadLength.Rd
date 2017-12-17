@@ -14,8 +14,8 @@ processReadLength(rl, pheno, counts_ex, counts_jx, cores)
 \item{cores}{The number of processing cores to use.}
 }
 \description{
-This function applies NNLS to calculate the Tx abundance
-from coverage of exonic and junction coverage statistics extracted using getExCounts()
-and getJxCounts().
+This function applies runs our NNLS model for a given subset
+of the pheno matrix that has the same read length specified
+and reports an rse.
 }
 \keyword{recountNNLS}

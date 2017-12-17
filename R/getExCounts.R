@@ -2,10 +2,9 @@
 #'
 #' This function returns the coverage of the exonic portion of sufficient
 #' features identified based on sequencing read length. It takes as input
-#' the phenotype matrix that is created by processPheno().
+#' a pheno table of all the same rls and queries the bigwig_path.
 #' @param pheno The phenotype matrix created by processPheno().
 #' @keywords getExCounts
-#' @export
 getExCounts = function(pheno, cores=1){
       ## Evaluate the consistency of read lengths supplied in phenotype
       rl = unique(pheno$rls_group)
@@ -27,7 +26,7 @@ getExCounts = function(pheno, cores=1){
       ## Giving correct exonic feature annotation
       rownames(totCov) = paste0("e", 1:length(bins))
       colnames(totCov) = pheno$run
-      totCov = totCov/rl # read-scale
+      totCov = totCov/rl
       return(totCov)
 }
 

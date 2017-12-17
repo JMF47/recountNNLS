@@ -34,15 +34,15 @@ rse_tx = recountNNLS(pheno)
 
 If not quantifying the transcript expression of a project already compiled by *recount2*, the user will need to provide:
 
-1. A manifest of 3 columns is required. The first column will list the names of the samples quantified by *rail*. The second column will list the path to the bigwig files of each sample. The third column will be the sequencing read length of each sample.
+1. A manifest of 5 columns is required. The columns are: project name (project); sample id (run); path to bigwig file resulting from *rail* alignment (bigwit_path); *rls* the read length of the sample; and whether the sample is paired end (paired_end).
 2. A path to the junction table created by *rail*. It is usually located in the folder `cross_sample_results/junctions.tsv.gz`.
 
 ```{r, echo =F}
 base='/dcl01/leek/data/ta_poc/geuvadis/simulation/37_1/rail/rail-rna_out/'
-manifest = data.frame(run = c("sample_01", "sample_02", "sample_03", "sample_04"), 
+manifest = data.frame(project = "test", run = c("sample_01", "sample_02", "sample_03", "sample_04"), 
                       bigwig_path = c('coverage_bigwigs/sample_01.bw', 'coverage_bigwigs/sample_02.bw', 
                                'coverage_bigwigs/sample_03.bw', 'coverage_bigwigs/sample_04.bw'),
-                      avg_read_length = c(37, 37, 37, 37))
+                      rls = c(37, 37, 37, 37), paired_end=F)
 junction_path =  'cross_sample_results/junctions.tsv.gz'
 ```
 ```{r}
