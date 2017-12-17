@@ -12,6 +12,6 @@ getExCounts(pheno, cores = 1)
 \description{
 This function returns the coverage of the exonic portion of sufficient
 features identified based on sequencing read length. It takes as input
-the phenotype matrix that is created by processPheno().
+a pheno table of all the same rls and queries the bigwig_path.
 }
 \keyword{getExCounts}
