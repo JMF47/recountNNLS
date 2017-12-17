@@ -34,7 +34,7 @@ rse_tx = recountNNLS(pheno)
 
 If not quantifying the transcript expression of a project already compiled by *recount2*, the user will need to provide:
 
-1. A manifest of 5 columns is required. The columns are: project name (project); sample id (run); path to bigwig file resulting from *rail* alignment (bigwit_path); *rls* the read length of the sample; and whether the sample is paired end (paired_end).
+1. A manifest of 5 columns is required. The columns are: project name (project); sample id (run); path to bigwig file resulting from *rail* alignment (bigwit_path); the read length of the sample (rls); and whether the sample is paired end (paired_end).
 2. A path to the junction table created by *rail*. It is usually located in the folder `cross_sample_results/junctions.tsv.gz`.
 
 The *rail* alignment and subsequent output must be to the GRCh38 assembly.
