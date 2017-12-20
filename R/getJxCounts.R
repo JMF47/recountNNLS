@@ -5,7 +5,6 @@
 #' @param input Either a SRA project name (part of recount2) OR
 #' the path to the rail output file containing junction information of the form 'cross_sample_results/junctions.tsv.gz'.
 #' @keywords getJxCounts
-#' @export
 getJxCounts = function(input, pheno, local=F){
       message(Sys.time(), " # Getting junction counts")
       data(gff_jx, package="recountNNLSdata")

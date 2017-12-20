@@ -7,7 +7,6 @@
 #' @param pheno The phenotype matrix created by processPheno().
 #' @param cores The number of processing cores to use.
 #' @keywords recountNNLS
-#' @export
 processReadLength = function(rl, pheno, counts_ex, counts_jx, cores){
       message(Sys.time(), paste0(" ### Processing read length group: ", rl))
       pheno = pheno[pheno$rls_group==rl,,drop=F]
