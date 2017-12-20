@@ -3,11 +3,14 @@
 #' This function returns the coverage of the exonic portion of sufficient
 #' features identified based on sequencing read length. It takes as input
 #' a pheno table of all the same rls and queries the bigwig_path.
-#' @param pheno The phenotype matrix created by processPheno().
+#' @param pheno The phenotype matrix created by processPheno(), limited to 1 'rls' group.
+#' @param cores The number of processing cores to use.
 #' @keywords getExCounts
 getExCounts = function(pheno, cores=1){
       ## Evaluate the consistency of read lengths supplied in phenotype
       rl = unique(pheno$rls_group)
+      if(length(rl)>1)
+            stop("getExCounts can only be run on a group of samples in the same read length category. Please split your data.")
 
       ## Load appropriate features based on read count
       data(list=paste0("bins_", rl), package = "recountNNLSdata")

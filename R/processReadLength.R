@@ -5,6 +5,8 @@
 #' and reports an rse.
 #' @param rl A read length that exists in the pheno table
 #' @param pheno The phenotype matrix created by processPheno().
+#' @param counts_ex The matrix of exonic feature counts where each row represents a exonic feature and each column a sample.
+#' @param counts_jx The matrix of junction feature counts where each row represents a junction feature and each column a sample.
 #' @param cores The number of processing cores to use.
 #' @keywords recountNNLS
 processReadLength = function(rl, pheno, counts_ex, counts_jx, cores){

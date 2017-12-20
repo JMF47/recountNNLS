@@ -4,8 +4,10 @@
 #' features identified based on sequencing read length.
 #' @param input Either a SRA project name (part of recount2) OR
 #' the path to the rail output file containing junction information of the form 'cross_sample_results/junctions.tsv.gz'.
+#' @param pheno The phenotype matrix created by processPheno().
+#' @param cores The number of processing cores to use.
 #' @keywords getJxCounts
-getJxCounts = function(input, pheno, local=F){
+getJxCounts = function(input, pheno){
       message(Sys.time(), " # Getting junction counts")
       data(gff_jx, package="recountNNLSdata")
       url_table <- recount::recount_url
@@ -16,12 +18,12 @@ getJxCounts = function(input, pheno, local=F){
             if(input %in% url_table$project){
                   url_table = url_table[url_table$project==input,]
                   if(sum(url_table$file_name=='rse_jx.Rdata')>0){
-                        if(local==F){
+                        # if(local==F){
                               rse_jx_file = recount::download_study(input, type = 'rse-jx', download = FALSE)
                               load(url(rse_jx_file))
-                        }else{
-                              load(url_table$path[url_table$file_name=='rse_jx.Rdata'])
-                        }
+                        # }else{
+                              # load(url_table$path[url_table$file_name=='rse_jx.Rdata'])
+                        # }
 
                         ## Look for junctions matching reference junctions
                         ol = findOverlaps(gff_jx, rowRanges(rse_jx), type="equal")
