@@ -17,6 +17,9 @@ processReadLength(rl, pheno, counts_ex, counts_jx, cores)
 
 \item{cores}{The number of processing cores to use.}
 }
+\value{
+A rse of the quantified tx abundances in the samples in pheno.
+}
 \description{
 This function applies runs our NNLS model for a given subset
 of the pheno matrix that has the same read length specified

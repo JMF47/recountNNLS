@@ -12,6 +12,9 @@ the path to the rail output file containing junction information of the form 'cr
 
 \item{pheno}{The phenotype matrix created by processPheno().}
 }
+\value{
+A matrix containing the junction counts for the samples in pheno.
+}
 \description{
 This function returns the coverage of the junction portion of the sufficient
 features identified based on sequencing read length.

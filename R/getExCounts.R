@@ -5,6 +5,7 @@
 #' a pheno table of all the same rls and queries the bigwig_path.
 #' @param pheno The phenotype matrix created by processPheno(), limited to 1 'rls' group.
 #' @param cores The number of processing cores to use.
+#' @return A matrix containing the exonic feature counts for the samples in pheno.
 #' @keywords getExCounts
 getExCounts = function(pheno, cores=1){
       ## Evaluate the consistency of read lengths supplied in phenotype
@@ -17,7 +18,7 @@ getExCounts = function(pheno, cores=1){
       bins <- eval(parse(text=paste0("bins_", rl)))
 
       ## Create a GRangesList by chr
-      grl = GenomicRanges::split(bins, seqnames(bins))
+      grl = GenomicRanges::split(bins, GenomicRanges::seqnames(bins))
 
       ## Counting the coverage of exonic features by file
       if(cores>1)
@@ -33,8 +34,8 @@ getExCounts = function(pheno, cores=1){
       return(totCov)
 }
 
-.processSample = function(sampleFile, grl, bins, verbose=T){
-      if(verbose==T)
+.processSample = function(sampleFile, grl, bins, verbose=TRUE){
+      if(verbose==TRUE)
             message("Processing sample ", sampleFile)
 
       cov_rle = rtracklayer::import(sampleFile, as = 'RleList')
@@ -43,12 +44,12 @@ getExCounts = function(pheno, cores=1){
       grl_keep = grl[match(names(cov_rle_matched), names(grl), nomatch=0)]
       cov_binned = sapply(names(grl_keep), .processChr, cov_rle_matched, grl_keep)
             cov_binned = do.call(c, cov_binned)
-      id = queryHits(findOverlaps(bins, unlist(grl_keep), type="equal"))
+      id = GenomicRanges::queryHits(GenomicRanges::findOverlaps(bins, unlist(grl_keep), type="equal"))
 
       cov_out = rep(0, length(bins))
       cov_out[id[!is.na(id)]] = cov_binned[!is.na(id)]
       return(cov_out)
 }
 .processChr = function(chr, rle_cov, grl_bins){
-      sum(Views(rle_cov[[chr]], ranges(grl_bins[[chr]])))
+      sum(Views(rle_cov[[chr]], rtracklayer::ranges(grl_bins[[chr]])))
 }

@@ -7,7 +7,9 @@
 #' @param input The project name from SRA or a manifest file for other projects aligned with Rail-RNA.
 #' @return A phenotype matrix containing at least the necessary information to run recountNNLS.
 #' @keywords processPheno
-#'
+#' @examples
+#' project = 'SRP063581'
+#' pheno = processPheno(project)
 #' @export
 processPheno = function(input){
       ## If input is of length 1, will interpret as SRA project name
@@ -53,7 +55,7 @@ processPheno = function(input){
 .read_pheno <- function(phenoFile, project) {
       if(project %in% c('SRP012682', 'TCGA')) {
             subsets <- c('SRP012682' = 'gtex', 'TCGA' = 'tcga')
-            res <- all_metadata(subsets[project], verbose = FALSE)
+            res <- recount::all_metadata(subsets[project], verbose = FALSE)
       } else {
             info <- readLines(phenoFile)
             res <- read.table(text = info[grepl(paste0('^project|^', project),

@@ -8,17 +8,18 @@
 #' @param counts_ex The matrix of exonic feature counts where each row represents a exonic feature and each column a sample.
 #' @param counts_jx The matrix of junction feature counts where each row represents a junction feature and each column a sample.
 #' @param cores The number of processing cores to use.
+#' @return A rse of the quantified tx abundances in the samples in pheno.
 #' @keywords recountNNLS
 processReadLength = function(rl, pheno, counts_ex, counts_jx, cores){
       message(Sys.time(), paste0(" ### Processing read length group: ", rl))
-      pheno = pheno[pheno$rls_group==rl,,drop=F]
+      pheno = pheno[pheno$rls_group==rl,,drop=FALSE]
 
       ## Create the appropriate count matrix
       message(Sys.time(), " # Compiling feature counts")
       if(is.null(counts_ex)) # If we have to calculate counts_ex from bw files
             counts_ex = getExCounts(pheno, cores = cores)
       if(!is.null(counts_jx)){ # If counts_jx is not empty
-            counts = rbind(counts_ex, counts_jx[, match(colnames(counts_ex), colnames(counts_jx)), drop=F])
+            counts = rbind(counts_ex, counts_jx[, match(colnames(counts_ex), colnames(counts_jx)), drop=FALSE])
       }else{ # If counts_jx is empty
             counts = counts_ex
       }
@@ -34,7 +35,7 @@ processReadLength = function(rl, pheno, counts_ex, counts_jx, cores){
 
             message(Sys.time(), " # Compiling regression information")
             reads = do.call(rbind, sapply(info, function(x)x[[1]]))
-            norm_matrix = matrix(rep(as.numeric(pheno$rls), times = dim(reads)[1]), byrow=T, ncol = dim(reads)[2])
+            norm_matrix = matrix(rep(as.numeric(pheno$rls), times = dim(reads)[1]), byrow=TRUE, ncol = dim(reads)[2])
             norm_matrix = rl/norm_matrix
             reads = reads*norm_matrix
             vars = do.call(rbind, sapply(info, function(x) x[[2]]))
@@ -52,21 +53,21 @@ processReadLength = function(rl, pheno, counts_ex, counts_jx, cores){
       ## Wrap up results in a RSE
       message(Sys.time(), " # Wrap up results in RSE")
       data(tx_grl, package = "recountNNLSdata")
-      unquantified = names(tx_grl)[names(tx_grl) %in% rownames(reads)==F]
+      unquantified = names(tx_grl)[names(tx_grl) %in% rownames(reads)==FALSE]
       uq_info = matrix(0, ncol = ncol(reads), nrow=length(unquantified))
       reads = rbind(reads, uq_info); se = rbind(se, uq_info)
       ind = match(names(tx_grl), rownames(reads))
-      reads = reads[ind,,drop=F]; se = se[ind,,drop=F]
+      reads = reads[ind,,drop=FALSE]; se = se[ind,,drop=FALSE]
 
       rownames(se) = NULL; colnames(se) = pheno$run
       rownames(reads) = NULL; colnames(reads) = pheno$run
-      rse_tx = SummarizedExperiment(assays=list(counts=reads, se=se), rowRanges=tx_grl, colData=pheno)
+      rse_tx = SummarizedExperiment::SummarizedExperiment(assays=list(counts=reads, se=se), rowRanges=tx_grl, colData=pheno)
       return(rse_tx)
 }
 
 ## Gene-wise execution of NNLS
-.calculateReads = function(locus, g2l, ems, counts, power, verbose=F){
-      if(verbose==T)
+.calculateReads = function(locus, g2l, ems, counts, power, verbose=FALSE){
+      if(verbose==TRUE)
             message(locus)
       b = NULL; Vb = NULL; colinear_info = NULL
       genes = as.character(g2l$gene[g2l$locus==locus])
@@ -100,7 +101,7 @@ processReadLength = function(rl, pheno, counts_ex, counts_jx, cores){
                         lm_info = matrix(apply(counts_sub, 2, .llm, P))
                         beta = sapply(lm_info, function(x) x[[1]])
                         Vbeta = sapply(lm_info, function(x) x[[2]])^2
-                        colinear = which(colnames(P) %in% rownames(beta)==F)
+                        colinear = which(colnames(P) %in% rownames(beta)==FALSE)
                         if(length(colinear)>0){ ## If there are colinear transcripts
                               colinear_tx = colnames(P)[colinear]
                               P = P[,-colinear]
@@ -145,7 +146,7 @@ processReadLength = function(rl, pheno, counts_ex, counts_jx, cores){
 ## Wrapper function for nnls
 .lnnls = function(data, matrix){
       mat = matrix(apply(matrix, 2, as.numeric), nrow=dim(matrix)[1])
-      mod=nnls(mat, data)
+      mod=nnls::nnls(mat, data)
       out = mod$x
       return(out)
 }
@@ -157,7 +158,7 @@ processReadLength = function(rl, pheno, counts_ex, counts_jx, cores){
       }
       P_out = P_list[[1]]
       for(i in 2:length(P_list)){
-            P_out = merge(P_out, P_list[[i]], by="rn", all=T)
+            P_out = merge(P_out, P_list[[i]], by="rn", all=TRUE)
       }
       P_out[is.na(P_out)] = 0
       rownames(P_out) = P_out$rn

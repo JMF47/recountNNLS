@@ -11,6 +11,9 @@ getExCounts(pheno, cores = 1)
 
 \item{cores}{The number of processing cores to use.}
 }
+\value{
+A matrix containing the exonic feature counts for the samples in pheno.
+}
 \description{
 This function returns the coverage of the exonic portion of sufficient
 features identified based on sequencing read length. It takes as input

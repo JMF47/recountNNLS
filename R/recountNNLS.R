@@ -12,6 +12,10 @@
 #' @param cores The number of processing cores to use.
 #' @return Returns an rse object of the estimated number of reads and the associated standard errors.
 #' Each row represents a protein-coding gene, and each column represents a sample in the phenotype matrix.
+#' @examples
+#' project = 'SRP063581'
+#' pheno = processPheno(project)
+#' recountNNLS(pheno)
 #' @keywords recountNNLS
 #' @export
 recountNNLS = function(pheno, jx_file=NULL, counts_ex=NULL, counts_jx=NULL, cores=1){
@@ -20,7 +24,7 @@ recountNNLS = function(pheno, jx_file=NULL, counts_ex=NULL, counts_jx=NULL, core
 
       if(is.null(counts_jx)){
             if(is.null(jx_file)){
-                  counts_jx = getJxCounts(unique(pheno$project), local=local)
+                  counts_jx = getJxCounts(unique(pheno$project))
             }else{
                   counts_jx = getJxCounts(jx_file)
             }

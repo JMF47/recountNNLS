@@ -18,4 +18,8 @@ for the rest of the analysis. The supplied input is either an SRA
 project id (from a project compiled on recount2), or a manifest file
 that contains information where the Rail-RNA outputs are.
 }
+\examples{
+project = 'SRP063581'
+pheno = processPheno(project)
+}
 \keyword{processPheno}

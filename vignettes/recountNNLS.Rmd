@@ -44,7 +44,7 @@ base='/dcl01/leek/data/ta_poc/geuvadis/simulation/37_1/rail/rail-rna_out/'
 manifest = data.frame(project = "test", run = c("sample_01", "sample_02", "sample_03", "sample_04"), 
                       bigwig_path = c('coverage_bigwigs/sample_01.bw', 'coverage_bigwigs/sample_02.bw', 
                                'coverage_bigwigs/sample_03.bw', 'coverage_bigwigs/sample_04.bw'),
-                      rls = c(37, 37, 37, 37), paired_end=F)
+                      rls = c(37, 37, 37, 37), paired_end=FALSE)
 junction_path =  'cross_sample_results/junctions.tsv.gz'
 ```
 ```{r}
