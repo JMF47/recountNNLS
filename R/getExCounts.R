@@ -44,7 +44,7 @@ getExCounts = function(pheno, cores=1){
       grl_keep = grl[match(names(cov_rle_matched), names(grl), nomatch=0)]
       cov_binned = sapply(names(grl_keep), .processChr, cov_rle_matched, grl_keep)
             cov_binned = do.call(c, cov_binned)
-      id = GenomicRanges::queryHits(GenomicRanges::findOverlaps(bins, unlist(grl_keep), type="equal"))
+      id = queryHits(findOverlaps(bins, unlist(grl_keep), type="equal"))
 
       cov_out = rep(0, length(bins))
       cov_out[id[!is.na(id)]] = cov_binned[!is.na(id)]
