@@ -4,11 +4,13 @@
 \alias{getJxCounts}
 \title{Obtain Exonic Feature Counts}
 \usage{
-getJxCounts(input, pheno, local = F)
+getJxCounts(input, pheno)
 }
 \arguments{
 \item{input}{Either a SRA project name (part of recount2) OR
 the path to the rail output file containing junction information of the form 'cross_sample_results/junctions.tsv.gz'.}
+
+\item{pheno}{The phenotype matrix created by processPheno().}
 }
 \description{
 This function returns the coverage of the junction portion of the sufficient

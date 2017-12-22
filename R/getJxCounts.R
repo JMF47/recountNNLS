@@ -5,7 +5,6 @@
 #' @param input Either a SRA project name (part of recount2) OR
 #' the path to the rail output file containing junction information of the form 'cross_sample_results/junctions.tsv.gz'.
 #' @param pheno The phenotype matrix created by processPheno().
-#' @param cores The number of processing cores to use.
 #' @keywords getJxCounts
 getJxCounts = function(input, pheno){
       message(Sys.time(), " # Getting junction counts")

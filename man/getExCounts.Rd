@@ -7,7 +7,9 @@
 getExCounts(pheno, cores = 1)
 }
 \arguments{
-\item{pheno}{The phenotype matrix created by processPheno().}
+\item{pheno}{The phenotype matrix created by processPheno(), limited to 1 'rls' group.}
+
+\item{cores}{The number of processing cores to use.}
 }
 \description{
 This function returns the coverage of the exonic portion of sufficient

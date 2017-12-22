@@ -4,7 +4,7 @@
 \alias{processPheno}
 \title{Phenotype Information Creation}
 \usage{
-processPheno(input, local = F)
+processPheno(input)
 }
 \arguments{
 \item{input}{The project name from SRA or a manifest file for other projects aligned with Rail-RNA.}
@@ -16,6 +16,6 @@ A phenotype matrix containing at least the necessary information to run recountN
 This function creates a phenotype/meta-information matrix with the information needed
 for the rest of the analysis. The supplied input is either an SRA
 project id (from a project compiled on recount2), or a manifest file
-that contains information where the rail outputs are.
+that contains information where the Rail-RNA outputs are.
 }
 \keyword{processPheno}

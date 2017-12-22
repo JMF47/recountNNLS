@@ -4,11 +4,19 @@
 \alias{recountNNLS}
 \title{NNLS for Tx Abundance Calculation}
 \usage{
-recountNNLS(pheno, jx_file = NULL, local = F, counts_ex = NULL,
-  counts_jx = NULL, cores = 1)
+recountNNLS(pheno, jx_file = NULL, counts_ex = NULL, counts_jx = NULL,
+  cores = 1)
 }
 \arguments{
 \item{pheno}{The table of phenotype information from processPheno().}
+
+\item{jx_file}{The path to the Rail-RNA junction coverage file if processing sample not already in recount2.}
+
+\item{counts_ex}{The matrix of exonic feature counts where each row represents a exonic feature and each column a sample.
+If set to NULL the function will automatically compile the matrix using the information in pheno. Defaults to NULL}
+
+\item{counts_jx}{The matrix of junction feature counts where each row represents a junction feature and each column a sample.
+If set to NULL the function will automatically compile the matrix using the information in pheno or the jx_file parameter. Defaults to NULL}
 
 \item{cores}{The number of processing cores to use.}
 }
