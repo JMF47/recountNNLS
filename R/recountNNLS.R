@@ -24,9 +24,9 @@ recountNNLS = function(pheno, jx_file=NULL, counts_ex=NULL, counts_jx=NULL, core
 
       if(is.null(counts_jx)){
             if(is.null(jx_file)){
-                  counts_jx = getJxCounts(unique(pheno$project))
+                  counts_jx = getJxCounts(unique(pheno$project), pheno)
             }else{
-                  counts_jx = getJxCounts(jx_file)
+                  counts_jx = getJxCounts(jx_file, pheno)
             }
       }
       rse_list = lapply(rls, processReadLength, pheno, counts_ex, counts_jx, cores)
