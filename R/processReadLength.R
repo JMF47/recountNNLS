@@ -61,7 +61,7 @@ processReadLength = function(rl, pheno, counts_ex, counts_jx, cores){
 
       rownames(se) = NULL; colnames(se) = pheno$run
       rownames(reads) = NULL; colnames(reads) = pheno$run
-      rse_tx = SummarizedExperiment::SummarizedExperiment(assays=list(counts=reads, se=se), rowRanges=tx_grl, colData=pheno)
+      rse_tx = SummarizedExperiment(assays=list(counts=reads, se=se), rowRanges=tx_grl, colData=pheno)
       return(rse_tx)
 }
 

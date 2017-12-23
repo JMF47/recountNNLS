@@ -29,9 +29,4 @@ This function applies NNLS to calculate the transcript abundance
 from coverage of exonic and junction coverage statistics for samples
 annotated in a phenotype matrix created using processPheno().
 }
-\examples{
-project = 'SRP063581'
-pheno = processPheno(project)
-recountNNLS(pheno)
-}
 \keyword{recountNNLS}
