@@ -61,6 +61,9 @@ processReadLength = function(rl, pheno, counts_ex, counts_jx, cores){
 
       rownames(se) = NULL; colnames(se) = pheno$run
       rownames(reads) = NULL; colnames(reads) = pheno$run
+      assays = list(counts=reads, se=se)
+      load(TxL, package='recountNNLSdata')
+      rowData(rse_tx) = TxL[match(rownames(rse_tx), TxL$tx_name),]
       rse_tx = SummarizedExperiment::SummarizedExperiment(assays=list(counts=reads, se=se), rowRanges=tx_grl, colData=pheno)
       return(rse_tx)
 }

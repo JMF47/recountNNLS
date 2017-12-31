@@ -20,17 +20,23 @@ processPheno = function(input){
             url_table <- url_table[url_table$project == project, ]
             if(nrow(url_table) == 0)
                   stop("Invalid 'project' argument. There's no such 'project' in the recount_url data.frame.")
-            sampleFiles <- recount::download_study(project = project, type = 'samples', download = FALSE)
-            phenoFile <- recount::download_study(project = project, type = 'phenotype',download = FALSE)
-            # Read phenotype and process into different rl groups where applicable
-            pheno <- .read_pheno(phenoFile, project)
-            # if(local==F)
-                  pheno$bigwig_path = url_table$url[match(pheno$bigwig_file, url_table$file_name)]
-            # else
-                  # pheno$bigwig_path = url_table$path[match(pheno$bigwig_file, url_table$file_name)]
-            pheno = pheno[!is.na(pheno$bigwig_path),]
-            paired = pheno$paired_end*1+1
-            pheno$rls = (pheno$avg_read_length/paired)
+            if(project=="TCGA"){
+                  data("tcga_meta", package="recountNNLSdata")
+                  return(tcga_meta)
+            }else{
+                  sampleFiles <- recount::download_study(project = project, type = 'samples', download = FALSE)
+                  phenoFile <- recount::download_study(project = project, type = 'phenotype',download = FALSE)
+                  # Read phenotype and process into different rl groups where applicable
+                  pheno <- .read_pheno(phenoFile, project)
+                  # if(local==F)
+                        pheno$bigwig_path = url_table$url[match(pheno$bigwig_file, url_table$file_name)]
+                  # else
+                        # pheno$bigwig_path = url_table$path[match(pheno$bigwig_file, url_table$file_name)]
+                  pheno = pheno[!is.na(pheno$bigwig_path),]
+                  paired = pheno$paired_end*1+1
+                  pheno$rls = (pheno$avg_read_length/paired)
+            }
+
       }else{
             pheno = input
 
