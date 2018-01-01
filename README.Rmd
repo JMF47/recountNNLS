@@ -29,16 +29,14 @@ rse_tx = recountNNLS(pheno)
 
 Please see vignette `vignette('recountNNLS', package='recountNNLS')`.
 
-## Deliverables
+## Deliverable
 
 The output of `recountNNLS()` is a `RangedSummarizedExperiment` where:
 
 * Each row corresponds to a transcript
 * Each column corresponds to a run (sample)
 * `rowRanges()` can be used to access a `GRangesList` annotation of the transcripts
-* `assays()` returns a list of length 2 that can be access with `$`
-      + `$counts` returns a `matrix` of estimated transcript abundance on a number of reads scale
-      + `$se` returns a `matrix` of estimated standard error of the abundance
+* `assays()` returns a list of length 2 that can be access with `$`: `$counts` returns a `matrix` of estimated transcript abundance on a number of reads scale; `$se` returns a `matrix` of estimated standard error of the abundance
 * `colData()` returns a `DataFrame` that contains the metadata for this project obtained from SRA and processed by `processPheno()`.
 * `rowData()` returns a `DataFrame` containing information on transcript names, gene, names, transcript lengths, and number of exons in transcript.
 * `colnames()` returns the sample ids (runs) in the project, and corresponds to each column of the `assays()` matrices.
