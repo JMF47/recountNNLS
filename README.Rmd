@@ -29,7 +29,7 @@ rse_tx = recountNNLS(pheno)
 
 Please see vignette `vignette('recountNNLS', package='recountNNLS')`.
 
-## Deliverables
+## Deliverable
 
 The output of `recountNNLS()` is a `RangedSummarizedExperiment` where:
 
