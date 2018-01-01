@@ -32,6 +32,5 @@ annotated in a phenotype matrix created using processPheno().
 \examples{
 project = 'SRP063581'
 pheno = processPheno(project)
-recountNNLS(pheno)
 }
 \keyword{recountNNLS}

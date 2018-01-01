@@ -15,7 +15,6 @@
 #' @examples
 #' project = 'SRP063581'
 #' pheno = processPheno(project)
-#' recountNNLS(pheno)
 #' @keywords recountNNLS
 #' @export
 recountNNLS = function(pheno, jx_file=NULL, counts_ex=NULL, counts_jx=NULL, cores=1){

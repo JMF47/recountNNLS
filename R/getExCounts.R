@@ -5,6 +5,7 @@
 #' a pheno table of all the same rls and queries the bigwig_path.
 #' @param pheno The phenotype matrix created by processPheno(), limited to 1 'rls' group.
 #' @param cores The number of processing cores to use.
+#' @import recountNNLSdata
 #' @return A matrix containing the exonic feature counts for the samples in pheno.
 #' @keywords getExCounts
 getExCounts = function(pheno, cores=1){
@@ -44,7 +45,7 @@ getExCounts = function(pheno, cores=1){
       grl_keep = grl[match(names(cov_rle_matched), names(grl), nomatch=0)]
       cov_binned = sapply(names(grl_keep), .processChr, cov_rle_matched, grl_keep)
             cov_binned = do.call(c, cov_binned)
-      id = GenomicRanges::queryHits(GenomicRanges::findOverlaps(bins, unlist(grl_keep), type="equal"))
+      id = queryHits(GenomicRanges::findOverlaps(bins, unlist(grl_keep), type="equal"))
 
       cov_out = rep(0, length(bins))
       cov_out[id[!is.na(id)]] = cov_binned[!is.na(id)]

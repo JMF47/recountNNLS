@@ -6,6 +6,7 @@
 #' the path to the rail output file containing junction information of the form 'cross_sample_results/junctions.tsv.gz'.
 #' @param pheno The phenotype matrix created by processPheno().
 #' @return A matrix containing the junction counts for the samples in pheno.
+#' @import GenomicRanges
 #' @keywords getJxCounts
 getJxCounts = function(input, pheno){
       message(Sys.time(), " # Getting junction counts")
@@ -26,7 +27,7 @@ getJxCounts = function(input, pheno){
                         # }
 
                         ## Look for junctions matching reference junctions
-                        ol = GenomicRanges::findOverlaps(gff_jx, SummarizedExperiment::rowRanges(rse_jx), type="equal")
+                        ol = findOverlaps(gff_jx, SummarizedExperiment::rowRanges(rse_jx), type="equal")
                         rse_jx = rse_jx[subjectHits(ol),]
 
                         ## Extract counts of reference junctions and annotate with feature name
@@ -41,10 +42,10 @@ getJxCounts = function(input, pheno){
                   ## Read junction table and parse information
                   tab = read.table(input, header=TRUE, sep="\t")
                   info = stringr::str_split_fixed(tab[,1], ";", n=4)
-                  gr = GenomicRanges::GRanges(info[,1], IRanges(as.numeric(info[,3]), as.numeric(info[,4])))
+                  gr = GRanges(info[,1], IRanges(as.numeric(info[,3]), as.numeric(info[,4])))
 
                   ## Look for junctions matching reference junctions
-                  ol = GenomicRanges::findOverlaps(gff_jx, gr, type="equal")
+                  ol = findOverlaps(gff_jx, gr, type="equal")
 
                   ## Extract counts of reference junctions and annotate with feature name
                   counts_jx = tab[subjectHits(ol),-1]

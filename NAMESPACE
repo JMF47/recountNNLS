@@ -2,3 +2,5 @@
 
 export(processPheno)
 export(recountNNLS)
+import(GenomicRanges)
+import(recountNNLSdata)
