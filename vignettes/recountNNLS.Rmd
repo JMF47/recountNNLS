@@ -64,7 +64,7 @@ rse_tx = recountNNLS(pheno, jx_file=junction_path, cores=1)
 
 ## Deliverables
 
-The output of `recountNNLS()` is a `RangeSummarizedExperiment` where:
+The output of `recountNNLS()` is a `RangedSummarizedExperiment` where:
 
 * Each row corresponds to a transcript
 * Each column corresponds to a run (sample)
