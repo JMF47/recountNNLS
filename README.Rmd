@@ -31,7 +31,7 @@ Please see vignette `vignette('recountNNLS', package='recountNNLS')`.
 
 ## Deliverables
 
-The output of `recountNNLS()` is a `RangeSummarizedExperiment` where:
+The output of `recountNNLS()` is a `RangedSummarizedExperiment` where:
 
 * Each row corresponds to a transcript
 * Each column corresponds to a run (sample)
