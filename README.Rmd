@@ -33,16 +33,6 @@ rse_tx = recountNNLS(pheno)
 
 Please see vignette `vignette('recountNNLS', package='recountNNLS')`.
 
-To obtain the necessary inputs for the linear model, one would apply:
-```{r, eval=F}
-library(recountNNLS)
-## Analyze the manifest input to format for downstream use
-pheno = processPheno(manifest)
-
-## Main NNLS workhorse function to create a RSE of transcript abundance
-rse_tx = recountNNLS(pheno, jx_file=junction_path, cores=1)
-```
-
 ## Deliverable
 
 The output of `recountNNLS()` is a `RangedSummarizedExperiment` where:
