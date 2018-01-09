@@ -1,18 +1,22 @@
 ## Overview
 
-This package provides an interface to estimate transcript abundances of any samples quantified by the aligner *rail*. This method is a non-negative least squares (NNLS) estimation that calculates the number of reads that originated from each transcript of the coding portion of the GencodeV25 transcriptome. The model does not require raw aligned `bam` files, but is content with compressed coverage statistics primarily stored in `bigwig` formats. 
+This package provides an interface to estimate transcript abundances of any samples quantified by the aligner *Rail-RNA*. This method is a non-negative least squares (NNLS) estimation that infers the number of reads that originated from each transcript of the coding portion of the GencodeV25 transcriptome. The model does not require raw aligned `BAM` files, but is content with compressed coverage statistics (coverage of the genome at a basepair level and across annotated junctions) primarily stored in `bigwig` formats.
 
-## Installation
-Prior to the installation of `recountNNLS` please install the companion data package `recountNNLSdata`:
+The more than 70,000 samples compiled by *recount2* already have transcript expression pre-computed by this method and is directly accessible. To replicate the abundance estimation of any SRA project in *recount2*, the user only needs to supply the SRA project id. Otherwise, users can supply the necessary information as outlined further below to utilize this package to carry out transcript abundance estimation.
+
+## Accessing quantified estimates for samples in recount2
+
+For the projects currently curated in recount2, to access quantified transcript abundances use:
 
 ```{r, eval=F}
-devtools::install_github("JMF47/recountNNLSdata")
-devtools::install_github("JMF47/recountNNLS", build_vignettes=TRUE)
+project = 'DRP000366'
+path = getRseTx(project, download_path=paste0(getwd(), '/rse_tx.RData'))
+load(path)
 ```
 
-## Quantifying Samples on recount2
+## Quantifying samples on recount2
 
-To use our NNLS model on the samples on recount2, all one needs is the SRA project id.
+To re-run the NNLS model on the samples in recount2 follow:
 
 ```{r, eval=F}
 library(recountNNLS)
@@ -25,9 +29,19 @@ pheno = processPheno(project)
 rse_tx = recountNNLS(pheno)
 
 ```
-## Data Not Yet Part of recount2
+## Data not yet part of recount2
 
 Please see vignette `vignette('recountNNLS', package='recountNNLS')`.
+
+To obtain the necessary inputs for the linear model, one would apply:
+```{r, eval=F}
+library(recountNNLS)
+## Analyze the manifest input to format for downstream use
+pheno = processPheno(manifest)
+
+## Main NNLS workhorse function to create a RSE of transcript abundance
+rse_tx = recountNNLS(pheno, jx_file=junction_path, cores=1)
+```
 
 ## Deliverable
 
@@ -36,7 +50,9 @@ The output of `recountNNLS()` is a `RangedSummarizedExperiment` where:
 * Each row corresponds to a transcript
 * Each column corresponds to a run (sample)
 * `rowRanges()` can be used to access a `GRangesList` annotation of the transcripts
-* `assays()` returns a list of length 2 that can be access with `$`: `$counts` returns a `matrix` of estimated transcript abundance on a number of reads scale; `$se` returns a `matrix` of estimated standard error of the abundance
+* `assays()` returns a list of length 2 that can be access with `$`
+      + `$counts` returns a `matrix` of estimated transcript abundance on a number of reads scale
+      + `$se` returns a `matrix` of estimated standard error of the abundance
 * `colData()` returns a `DataFrame` that contains the metadata for this project obtained from SRA and processed by `processPheno()`.
 * `rowData()` returns a `DataFrame` containing information on transcript names, gene, names, transcript lengths, and number of exons in transcript.
 * `colnames()` returns the sample ids (runs) in the project, and corresponds to each column of the `assays()` matrices.

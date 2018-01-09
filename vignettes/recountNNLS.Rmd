@@ -11,13 +11,23 @@ vignette: >
 
 ## Overview
 
-This package provides an interface to estimate transcript abundances of any samples quantified by the aligner *rail*. This method is a non-negative least squares (NNLS) estimation that calculates the number of reads that originated from each transcript of the coding portion of the GencodeV25 transcriptome. The model does not require raw aligned `bam` files, but is content with compressed coverage statistics primarily stored in `bigwig` formats.
+This package provides an interface to estimate transcript abundances of any samples quantified by the aligner *Rail-RNA*. This method is a non-negative least squares (NNLS) estimation that infers the number of reads that originated from each transcript of the coding portion of the GencodeV25 transcriptome. The model does not require raw aligned `BAM` files, but is content with compressed coverage statistics (coverage of the genome at a basepair level and across annotated junctions) primarily stored in `bigwig` formats.
 
-All of the SRA projects compiled by *recount2* already have transcript expression pre-computed through this method and is accessible through *recount2*. To replicate the abundance estimation of any SRA project in *recount2*, the user only needs to supply the SRA project id. Otherwise, users can supply the necessary information as outlined further below to utilize this package to carry out transcript abundance estimation.
+The more than 70,000 samples compiled by *recount2* already have transcript expression pre-computed by this method and is directly accessible. To replicate the abundance estimation of any SRA project in *recount2*, the user only needs to supply the SRA project id. Otherwise, users can supply the necessary information as outlined further below to utilize this package to carry out transcript abundance estimation.
 
-## Quantifying Samples on recount2
+## Accessing quantified estimates for samples in recount2
 
-To use our NNLS model on the samples on recount2, all one needs is the SRA project id.
+For the projects currently curated in recount2, to access quantified transcript abundances use:
+
+```{r, eval=F}
+project = 'DRP000366'
+path = getRseTx(project, download_path=paste0(getwd(), '/rse_tx.RData'))
+load(path)
+```
+
+## Quantifying samples on recount2
+
+To re-run the NNLS model on the samples in recount2 follow:
 
 ```{r, eval=F}
 library(recountNNLS)
@@ -30,12 +40,12 @@ pheno = processPheno(project)
 rse_tx = recountNNLS(pheno)
 
 ```
-## Data Not Yet Part of recount2
+## Data not yet part of recount2
 
-If not quantifying the transcript expression of a project already compiled by *recount2*, but samples have been aligned with *rail* to the GRCh38 assembly, then one can quantify transcript expression with these 2 pieces of information:
+If not quantifying the transcript expression of a project already compiled by *recount2*, but samples have been aligned with *Rail-RNA* to the GRCh38 assembly, then one can quantify transcript expression with these 2 pieces of information:
 
-1. A manifest of 5 columns is required. The columns are: project name (project); sample id (run); path to bigwig file resulting from *rail* alignment (bigwit_path); the read length of the sample (rls); and whether the sample is paired end (paired_end).
-2. A path to the junction table created by *rail*. It is usually located in the folder `cross_sample_results/junctions.tsv.gz`.
+1. A manifest of 5 columns is required. The columns are: project name (project); sample id (run); path to bigwig file resulting from *Rail-RNA* alignment (bigwit_path); the read length of the sample (rls); and whether the sample is paired end (paired_end).
+2. A path to the junction table created by *Rail-RNA*. It is usually located in the folder `cross_sample_results/junctions.tsv.gz`.
 
 
 ```{r, echo =F}
