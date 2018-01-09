@@ -15,7 +15,7 @@
 getRseTx = function(project, download_path=NULL){
       target = paste0('http://duffel.rail.bio/recount/', project, '/rse_tx.RData')
       if(is.null(download_path)){
-            error("Please specify a download path.")
+            stop("Please specify a download path.")
       }else{
             download.file(url=paste0('http://duffel.rail.bio/recount/', project, '/rse_tx.RData'), destfile=download_path)
       }
