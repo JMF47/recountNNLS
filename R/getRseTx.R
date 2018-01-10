@@ -12,12 +12,8 @@
 #' getRseTx(project)
 #' @keywords recountNNLS
 #' @export
-getRseTx = function(project, download_path=NULL){
+getRseTx = function(project, download_path=paste0(getwd(), '/rse_tx.RData')){
       target = paste0('http://duffel.rail.bio/recount/', project, '/rse_tx.RData')
-      if(is.null(download_path)){
-            stop("Please specify a download path.")
-      }else{
-            download.file(url=paste0('http://duffel.rail.bio/recount/', project, '/rse_tx.RData'), destfile=download_path)
-      }
+      download.file(url=paste0('http://duffel.rail.bio/recount/', project, '/rse_tx.RData'), destfile=download_path)
       return(download_path)
 }
