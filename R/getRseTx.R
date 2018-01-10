@@ -13,6 +13,7 @@
 #' project = 'DRP000366'
 #' getRseTx(project)
 #' @keywords recountNNLS
+#' @import SummarizedExperiment
 #' @export
 getRseTx = function(project, tissue=NULL, download_path=paste0(getwd(), '/rse_tx.RData')){
       if(project %in% c('TCGA', 'SRP012682') & (!is.null(tissue))){
