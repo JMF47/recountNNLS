@@ -15,11 +15,11 @@
 #' @keywords recountNNLS
 #' @export
 getRseTx = function(project, tissue=NULL, download_path=paste0(getwd(), '/rse_tx.RData')){
-      if(project %in% c('TCGA', 'SRP012682') & !is.null(tissue)){
-            target = paste0('http://duffel.rail.bio/recount/', project, '/rse_tx_', tissue, '.RData')
+      if(project %in% c('TCGA', 'SRP012682') & (!is.null(tissue))){
+            target = paste0('http://duffel.rail.bio/recount/', project, '/rse_tx_', tissue, '.Rdata')
       }else{
             target = paste0('http://duffel.rail.bio/recount/', project, '/rse_tx.RData')
       }
-      download.file(url=paste0('http://duffel.rail.bio/recount/', project, '/rse_tx.RData'), destfile=download_path)
+      download.file(url=target, destfile=download_path)
       return(download_path)
 }
