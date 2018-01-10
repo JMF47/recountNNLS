@@ -4,13 +4,17 @@
 \alias{getRseTx}
 \title{Download and/or access quantified SRA projects}
 \usage{
-getRseTx(project, download_path = paste0(getwd(), "/rse_tx.RData"))
+getRseTx(project, tissue = NULL, download_path = paste0(getwd(),
+  "/rse_tx.RData"))
 }
 \arguments{
 \item{project}{A SRA project name for a project already curated in recount2.}
 
-\item{download_path}{Where the rse should be downloaded to if not NULL.
+\item{tissue}{A specific tissue type of interest. Relevant only to TCGA
+and GTEX (SRP012682) samples. Defaults to NULL.
 Defaults to NULL, i.e. no downloading.}
+
+\item{download_path}{Where the rse should be downloaded to if not NULL.}
 }
 \value{
 Returns the path to downloaded object.
