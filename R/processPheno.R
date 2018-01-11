@@ -4,7 +4,8 @@
 #' for the rest of the analysis. The supplied input is either an SRA
 #' project id (from a project compiled on recount2), or a manifest file
 #' that contains information where the Rail-RNA outputs are.
-#' @param input The project name from SRA or a manifest file for other projects aligned with Rail-RNA.
+#' @param input The project name from SRA as a \code{character}
+#' OR a \code{data.frame} describing another project aligned with Rail-RNA.
 #' @return A phenotype matrix containing at least the necessary information to run recountNNLS.
 #' @keywords processPheno
 #' @examples

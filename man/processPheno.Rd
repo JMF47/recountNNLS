@@ -7,7 +7,8 @@
 processPheno(input)
 }
 \arguments{
-\item{input}{The project name from SRA or a manifest file for other projects aligned with Rail-RNA.}
+\item{input}{The project name from SRA as a \code{character}
+OR a \code{data.frame} describing another project aligned with Rail-RNA.}
 }
 \value{
 A phenotype matrix containing at least the necessary information to run recountNNLS.
