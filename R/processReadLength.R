@@ -31,7 +31,10 @@ processReadLength = function(rl, pheno, counts_ex, counts_jx, cores){
 
       ## Run the NNLS
       message(Sys.time(), " # Executing model")
+      ### Old version of indices
       info = mclapply(unique(g2l$locus), .calculateReads, g2l, matrix_list, counts, power=1, mc.cores = cores)
+      ### New version of indices
+      # info = mclapply(unique(gene_mat$locus), .calculateReads, gene_mat, matrix_list, counts, power=1, mc.cores = cores)
 
             message(Sys.time(), " # Compiling regression information")
             reads = do.call(rbind, sapply(info, function(x)x[[1]]))
@@ -69,11 +72,10 @@ processReadLength = function(rl, pheno, counts_ex, counts_jx, cores){
 }
 
 ## Gene-wise execution of NNLS
-.calculateReads = function(locus, g2l, ems, counts, power, verbose=FALSE){
-      if(verbose==TRUE)
-            message(locus)
+.calculateReads = function(locus, locus_info, ems, counts, power){
+      # print(locus); flush.console()
       b = NULL; Vb = NULL; colinear_info = NULL
-      genes = as.character(g2l$gene[g2l$locus==locus])
+      genes = as.character(locus_info$gene[locus_info$locus==locus])
       ems_sub = ems[match(genes, names(ems))]
       ems_sub = ems_sub[sapply(ems_sub, length)>0]
       if(length(ems_sub)>1)
