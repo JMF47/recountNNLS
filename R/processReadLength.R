@@ -138,8 +138,7 @@ inferReads = function(locus, ems, counts, power){
       n = dim(P)[1]
       p = dim(P)[2]
       d = sapply(n*h/p, function(x) min(x, 4))
-      # inflate = res^2/(1-h)^d
-      inflate = res^2/(1-h)^2
+      inflate = res^2/(1-h)^d
       if(length(inflate)==1){
             Sigma = inflate
       }else{
