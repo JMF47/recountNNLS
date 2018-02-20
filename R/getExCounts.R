@@ -6,6 +6,7 @@
 #' @param pheno The phenotype matrix created by processPheno(), limited to 1 'rls' group.
 #' @param cores The number of processing cores to use.
 #' @import recountNNLSdata
+#' @export
 #' @return A matrix containing the exonic feature counts for the samples in pheno.
 #' @keywords getExCounts
 getExCounts = function(pheno, cores=1){
@@ -43,10 +44,10 @@ getExCounts = function(pheno, cores=1){
       ## To ensure consistency when some samples have chrs dropped from no mapped reads
       cov_rle_matched = cov_rle[match(names(grl), names(cov_rle), nomatch=0)]
       grl_keep = grl[match(names(cov_rle_matched), names(grl), nomatch=0)]
-      cov_binned = sapply(names(grl_keep), .processChr, cov_rle_matched, grl_keep)
-            cov_binned = do.call(c, cov_binned)
+            cov_binned = sapply(names(grl_keep), .processChr, cov_rle_matched, grl_keep)
+            if(class(cov_binned)!="matrix")
+                  cov_binned = do.call(c, cov_binned)
       id = queryHits(GenomicRanges::findOverlaps(bins, unlist(grl_keep), type="equal"))
-
       cov_out = rep(0, length(bins))
       cov_out[id[!is.na(id)]] = cov_binned[!is.na(id)]
       return(cov_out)

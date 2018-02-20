@@ -7,6 +7,7 @@
 #' @param pheno The phenotype matrix created by processPheno().
 #' @return A matrix containing the junction counts for the samples in pheno.
 #' @import GenomicRanges
+#' @export
 #' @keywords getJxCounts
 getJxCounts = function(input, pheno){
       message(Sys.time(), " # Getting junction counts")
@@ -25,7 +26,6 @@ getJxCounts = function(input, pheno){
                         # }else{
                               # load(url_table$path[url_table$file_name=='rse_jx.Rdata'])
                         # }
-
                         ## Look for junctions matching reference junctions
                         ol = findOverlaps(gff_jx, SummarizedExperiment::rowRanges(rse_jx), type="equal")
                         rse_jx = rse_jx[subjectHits(ol),]
@@ -38,20 +38,20 @@ getJxCounts = function(input, pheno){
                   }
                   return(NULL)
             ## Input is the path to the junction coverage file from rail
-            }else{
-                  ## Read junction table and parse information
-                  tab = read.table(input, header=TRUE, sep="\t")
-                  info = stringr::str_split_fixed(tab[,1], ";", n=4)
-                  gr = GRanges(info[,1], IRanges(as.numeric(info[,3]), as.numeric(info[,4])))
-
-                  ## Look for junctions matching reference junctions
-                  ol = findOverlaps(gff_jx, gr, type="equal")
-
-                  ## Extract counts of reference junctions and annotate with feature name
-                  counts_jx = tab[subjectHits(ol),-1]
-                  if(dim(counts_jx)[1]>0)
-                        rownames(counts_jx) = paste0("i", queryHits(ol))
             }
+      }else{
+            ## Read junction table and parse information
+            tab = read.table(input, header=TRUE, sep="\t")
+            info = stringr::str_split_fixed(tab[,1], ";", n=4)
+            gr = GRanges(info[,1], IRanges(as.numeric(info[,3]), as.numeric(info[,4])))
+
+            ## Look for junctions matching reference junctions
+            ol = findOverlaps(gff_jx, gr, type="equal")
+
+            ## Extract counts of reference junctions and annotate with feature name
+            counts_jx = tab[subjectHits(ol),-1,drop=FALSE]
+            if(dim(counts_jx)[1]>0)
+                  rownames(counts_jx) = paste0("i", queryHits(ol))
             return(counts_jx)
       }
       return(NULL)
