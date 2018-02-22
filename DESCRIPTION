@@ -1,6 +1,6 @@
 Package: recountNNLS
 Title: Transcript abundance linear modeling from compressed coverage information
-Version: 0.99.2
+Version: 0.99.3
 Maintainer: Jack Fu <jmfu@jhsph.edu>
 Author: Jack Fu <jmfu@jhsph.edu>
 Description: This pacakge provides an interface to estimate transcript abundances of any samples quantified by the aligner rail. This method is a non negative least squares estimation that calculates the number of reads that originated from each transcript of the coding portion of the GencodeV25 transcriptome. The model does not require raw aligned bam files, but is content with compressed coverage statistics primarily stored in bigwig formats.

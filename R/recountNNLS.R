@@ -20,23 +20,12 @@
 recountNNLS = function(pheno, jx_file=NULL, counts_ex=NULL, counts_jx=NULL, cores=1){
       rls = unique(pheno$rls_group)
       message(Sys.time(), " ##### There are ", length(rls), " read length groups and ", dim(pheno)[1], " samples")
-
-      if(is.null(counts_jx)){
-            if(is.null(jx_file)){
-                  counts_jx = getJxCounts(unique(pheno$project), pheno)
-            }else{
-                  counts_jx = getJxCounts(jx_file, pheno)
-            }
-      }
-      rse_list = lapply(rls, processReadLength, pheno, counts_ex, counts_jx, cores)
+      if(length(jx_file)==0) jx_file = unique(pheno$project)
+      rse_list = lapply(rls, processReadLength, pheno, jx_file, cores)
 
       message(Sys.time(), " ## Processing all RSEs")
       output = do.call(SummarizedExperiment::cbind, rse_list)
 
-      # if(local==T){
-      #       pheno = processPheno(unique(pheno$project))
-      #       colData(output)$bigwig_path = pheno$bigwig_path
-      # }
       return(output)
 }
 

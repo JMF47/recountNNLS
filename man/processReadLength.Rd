@@ -4,16 +4,14 @@
 \alias{processReadLength}
 \title{NNLS for Tx Abundance Calculation}
 \usage{
-processReadLength(rl, pheno, counts_ex, counts_jx, cores)
+processReadLength(rl, pheno, jx_file, cores)
 }
 \arguments{
 \item{rl}{A read length that exists in the pheno table}
 
 \item{pheno}{The phenotype matrix created by processPheno().}
 
-\item{counts_ex}{The matrix of exonic feature counts where each row represents a exonic feature and each column a sample.}
-
-\item{counts_jx}{The matrix of junction feature counts where each row represents a junction feature and each column a sample.}
+\item{jx_file}{The path to the Rail-RNA junction coverage file if processing sample not already in recount2.}
 
 \item{cores}{The number of processing cores to use.}
 }
