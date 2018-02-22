@@ -17,11 +17,11 @@
 #' pheno = processPheno(project)
 #' @keywords recountNNLS
 #' @export
-recountNNLS = function(pheno, jx_file=NULL, counts_ex=NULL, counts_jx=NULL, cores=1, power=0){
+recountNNLS = function(pheno, jx_file=NULL, counts_ex=NULL, counts_jx=NULL, cores=1){
       rls = unique(pheno$rls_group)
       message(Sys.time(), " ##### There are ", length(rls), " read length groups and ", dim(pheno)[1], " samples")
       if(length(jx_file)==0) jx_file = unique(pheno$project)
-      rse_list = lapply(rls, processReadLength, pheno, jx_file, cores, power=0)
+      rse_list = lapply(rls, processReadLength, pheno, jx_file, cores)
 
       message(Sys.time(), " ## Processing all RSEs")
       output = do.call(SummarizedExperiment::cbind, rse_list)

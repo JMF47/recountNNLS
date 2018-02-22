@@ -5,7 +5,7 @@
 \title{NNLS for Tx Abundance Calculation}
 \usage{
 recountNNLS(pheno, jx_file = NULL, counts_ex = NULL, counts_jx = NULL,
-  cores = 1, power = 0)
+  cores = 1)
 }
 \arguments{
 \item{pheno}{The table of phenotype information from processPheno().}

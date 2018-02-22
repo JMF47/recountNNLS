@@ -10,7 +10,7 @@
 #' @return A rse of the quantified tx abundances in the samples in pheno.
 #' @export
 #' @keywords recountNNLS
-processReadLength = function(rl, pheno, jx_file, cores, power=0){
+processReadLength = function(rl, pheno, jx_file, cores){
       message(Sys.time(), paste0(" ### Processing read length group: ", rl))
       pheno = pheno[pheno$rls_group==rl,,drop=FALSE]
 
@@ -26,10 +26,15 @@ processReadLength = function(rl, pheno, jx_file, cores, power=0){
 
       ## Run the NNLS
       message(Sys.time(), " # Executing model")
-      load(paste0("~/", rl, "_g2l.rda"))
-      if(rl<75){load("~/75_g2l.rda")}
-      loci = unique(g2l$locus)
-      info = mclapply(loci, inferReads, matrix_list, counts, power=power, mc.cores = cores)
+      if(rl<=75){
+            data(list=paste0("g2l_75"), package = "recountNNLSdata")
+            g2l <- eval(parse(text=paste0("g2l_75")))
+      }else{
+            data(list=paste0("g2l_", rl), package = "recountNNLSdata")
+            g2l <- eval(parse(text=paste0("g2l_", rl)))
+      }
+      loci <- unique(g2l$locus)
+      info <- mclapply(loci, .inferReads, g2l, matrix_list, counts, power=1, mc.cores = cores)
 
       message(Sys.time(), " # Compiling regression information")
       reads = do.call(rbind, sapply(info, function(x)x[[1]]))
@@ -64,8 +69,7 @@ processReadLength = function(rl, pheno, jx_file, cores, power=0){
       return(rse_tx)
 }
 
-inferReads = function(locus, ems, counts, power){
-      message(which(loci==locus))
+.inferReads = function(locus, g2l, ems, counts, power){
       coprocess = as.character(g2l$gene_id[g2l$locus==locus])
       if(length(coprocess)>1){
             ems_sub = ems[coprocess]
@@ -103,7 +107,7 @@ inferReads = function(locus, ems, counts, power){
                   }
                   b = matrix(sapply(nnls_mods, function(x) x$x), ncol=dim(counts_sub)[2])
                         rownames(b) = colnames(P_weighted)
-                  Vb = matrix(sapply(nnls_mods, .robustSE, P_weighted), ncol=dim(counts_sub)[2])
+                  Vb = matrix(sapply(nnls_mods, .robustVar, P_weighted), ncol=dim(counts_sub)[2])
                   if(dim(P_weighted)[2]>1){
                         scores = .scoreNNLS(P_weighted)
                   }else{
@@ -128,7 +132,7 @@ inferReads = function(locus, ems, counts, power){
       mod=lm(data~.-1, data=matrix)
       return(mod)
 }
-.robustSE = function(mod, P){
+.robustVar = function(mod, P){
       res = mod$residuals
       X = apply(P, 2, as.numeric)
       XTXinv = solve(t(X) %*% X, tol=0)
