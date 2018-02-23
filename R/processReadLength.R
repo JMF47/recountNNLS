@@ -42,7 +42,8 @@ processReadLength = function(rl, pheno, jx_file, cores){
       scores = do.call(rbind, sapply(info, function(x)x[[3]]))
 
       norm_matrix = matrix(rep(as.numeric(pheno$rls), times = dim(reads)[1]), byrow=TRUE, ncol = dim(reads)[2])
-      norm_matrix = rl/norm_matrix
+      pe_matrix = (matrix(rep(as.numeric(pheno$paired_end), times = dim(reads)[1]), byrow=TRUE, ncol = dim(reads)[2]))*1+1
+      norm_matrix = rl/norm_matrix/pe_matrix
       reads = reads*norm_matrix
       vars = vars*norm_matrix^2
       se = sqrt(apply(vars, 2, as.numeric))
