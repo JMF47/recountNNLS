@@ -34,12 +34,13 @@ processReadLength = function(rl, pheno, jx_file, cores){
             g2l <- eval(parse(text=paste0("g2l_", rl)))
       }
       loci <- unique(g2l$locus)
-      info <- mclapply(loci, .inferReads, g2l, matrix_list, counts, power=1, mc.cores = cores)
+      info <- mclapply(loci, .inferReads, g2l, matrix_list, counts, power=0, mc.cores = cores)
 
       message(Sys.time(), " # Compiling regression information")
       reads = do.call(rbind, sapply(info, function(x)x[[1]]))
       vars = do.call(rbind, sapply(info, function(x)x[[2]]))
       scores = do.call(rbind, sapply(info, function(x)x[[3]]))
+      df = do.call(rbind, sapply(info, function(x)x[[4]]))
 
       norm_matrix = matrix(rep(as.numeric(pheno$rls), times = dim(reads)[1]), byrow=TRUE, ncol = dim(reads)[2])
       pe_matrix = (matrix(rep(as.numeric(pheno$paired_end), times = dim(reads)[1]), byrow=TRUE, ncol = dim(reads)[2]))*1+1
@@ -58,11 +59,13 @@ processReadLength = function(rl, pheno, jx_file, cores){
       reads = reads[ind,,drop=FALSE]
       se = se[ind,,drop=FALSE]
       scores = scores[ind,,drop=FALSE]
+      df = df[ind,,drop=FALSE]
 
       rownames(se) = NULL; colnames(se) = pheno$run
       rownames(reads) = NULL; colnames(reads) = pheno$run
       rownames(scores) = NULL; colnames(scores) = pheno$run
-      assays = list(counts=reads, ses=se, scores = scores)
+      rownames(df) = NULL; colnames(df) = pheno$run
+      assays = list(fragments=reads, ses=se, scores = scores, df = df)
       data(tx_info, package='recountNNLSdata')
       rse_tx = SummarizedExperiment::SummarizedExperiment(assays=assays, rowRanges=tx_grl, colData=pheno)
       SummarizedExperiment::rowData(rse_tx) = tx_info[match(rownames(rse_tx), tx_info$tx_name),]
@@ -79,7 +82,7 @@ processReadLength = function(rl, pheno, jx_file, cores){
             P = ems[[coprocess]]
       }
       ## Proceed to estimate information
-      b = NULL; Vb = NULL; scores=NULL
+      b = NULL; Vb = NULL; scores=NULL; df=NULL
       ## If the emission matrix is not empty
       if(length(P)>0){
             mat = match(rownames(P), rownames(counts))
@@ -103,9 +106,6 @@ processReadLength = function(rl, pheno, jx_file, cores){
                         P_weighted = P_weighted[,-colinear,drop=FALSE]
                   }
                   nnls_mods = apply(counts_weighted, 2, .lnnls, P_weighted)
-                  for(i in 1:length(nnls_mods)){
-                        lm_mods[[i]]$residuals <- nnls_mods[[i]]$residuals
-                  }
                   b = matrix(sapply(nnls_mods, function(x) x$x), ncol=dim(counts_sub)[2])
                         rownames(b) = colnames(P_weighted)
                   Vb = matrix(sapply(nnls_mods, .robustVar, P_weighted), ncol=dim(counts_sub)[2])
@@ -124,10 +124,11 @@ processReadLength = function(rl, pheno, jx_file, cores){
                         Vb = rbind(Vb, Vb_nas)
                         scores = c(scores, scores_nas)
                   }
+                  df = matrix(dim(P)[1]-dim(P)[2], ncol=dim(b)[2], nrow=dim(b)[1])
                   scores = matrix(rep(scores, dim(b)[2]), ncol=dim(b)[2])
             }
       }
-      return(list(b, Vb, scores))
+      return(list(b, Vb, scores, df))
 }
 .llm = function(data, matrix){
       mod=lm(data~.-1, data=matrix)
