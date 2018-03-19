@@ -124,7 +124,7 @@ processReadLength = function(rl, pheno, jx_file, cores){
                         Vb = rbind(Vb, Vb_nas)
                         scores = c(scores, scores_nas)
                   }
-                  df = matrix(dim(P)[1]-dim(P)[2], ncol=dim(b)[2], nrow=dim(b)[1])
+                  df = matrix(max(1, dim(P)[1]-dim(P)[2]), ncol=dim(b)[2], nrow=dim(b)[1])
                   scores = matrix(rep(scores, dim(b)[2]), ncol=dim(b)[2])
             }
       }
