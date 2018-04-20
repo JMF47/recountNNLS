@@ -4,7 +4,7 @@
 \alias{processPheno}
 \title{Phenotype Information Creation}
 \usage{
-processPheno(input)
+processPheno(input, local = FALSE)
 }
 \arguments{
 \item{input}{The project name from SRA as a \code{character}

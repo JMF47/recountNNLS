@@ -4,7 +4,7 @@
 \alias{processReadLength}
 \title{NNLS for Tx Abundance Calculation}
 \usage{
-processReadLength(rl, pheno, jx_file, cores)
+processReadLength(rl, pheno, jx_file, cores, counts = NULL)
 }
 \arguments{
 \item{rl}{A read length that exists in the pheno table}

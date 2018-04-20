@@ -12,7 +12,7 @@
 #' project = 'SRP063581'
 #' pheno = processPheno(project)
 #' @export
-processPheno = function(input){
+processPheno = function(input, local=FALSE){
       ## If input is of length 1, will interpret as SRA project name
       if(class(input)=="character"){
             project = input
@@ -21,23 +21,22 @@ processPheno = function(input){
             url_table <- url_table[url_table$project == project, ]
             if(nrow(url_table) == 0)
                   stop("Invalid 'project' argument. There's no such 'project' in the recount_url data.frame.")
-            if(project=="TCGA"){
-                  data("tcga_meta", package="recountNNLSdata")
-                  return(tcga_meta)
-            }else{
-                  sampleFiles <- recount::download_study(project = project, type = 'samples', download = FALSE)
-                  phenoFile <- recount::download_study(project = project, type = 'phenotype',download = FALSE)
-                  # Read phenotype and process into different rl groups where applicable
-                  pheno <- .read_pheno(phenoFile, project)
-                  # if(local==F)
-                        pheno$bigwig_path = url_table$url[match(pheno$bigwig_file, url_table$file_name)]
-                  # else
-                        # pheno$bigwig_path = url_table$path[match(pheno$bigwig_file, url_table$file_name)]
-                  pheno = pheno[!is.na(pheno$bigwig_path),]
-                  paired = pheno$paired_end*1+1
+            sampleFiles <- recount::download_study(project = project, type = 'samples', download = FALSE)
+            phenoFile <- recount::download_study(project = project, type = 'phenotype',download = FALSE)
+            # Read phenotype and process into different rl groups where applicable
+            pheno <- .read_pheno(phenoFile, project)
+            if(local==FALSE)
+                  pheno$bigwig_path = url_table$url[match(pheno$bigwig_file, url_table$file_name)]
+            else
+                  pheno$bigwig_path = url_table$path[match(pheno$bigwig_file, url_table$file_name)]
+            pheno = pheno[!is.na(pheno$bigwig_path),]
+            paired = pheno$paired_end*1+1
+            if(input != "TCGA"){
                   pheno$rls = (pheno$avg_read_length/paired)
+            }else{
+                  pheno$rls = round(pheno$auc/pheno$mapped_read_count)
+                  pheno$run = stringr::str_replace(pheno$bigwig_file, ".bw", "")
             }
-
       }else{
             pheno = input
 
@@ -51,7 +50,6 @@ processPheno = function(input){
 
             if(class(pheno$rls)!="numeric")
                   stop("rls should be numeric")
-
       }
       rls_avail = c(37, 50, 75, 100, 150)
       pheno$rls_group = sapply(pheno$rls, function(x) rls_avail[which.min(abs(rls_avail-x))])
@@ -66,8 +64,8 @@ processPheno = function(input){
       } else {
             info <- readLines(phenoFile)
             res <- read.table(text = info[grepl(paste0('^project|^', project),
-                                                info)], header = TRUE, stringsAsFactors = FALSE, sep = '\t',
-                              comment.char = '', quote = '')
+                  info)], header = TRUE, stringsAsFactors = FALSE, sep = '\t',
+                  comment.char = '', quote = '')
       }
       return(res)
 }

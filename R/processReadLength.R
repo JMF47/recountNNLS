@@ -10,7 +10,7 @@
 #' @return A rse of the quantified tx abundances in the samples in pheno.
 #' @export
 #' @keywords recountNNLS
-processReadLength = function(rl, pheno, jx_file, cores){
+processReadLength = function(rl, pheno, jx_file, cores, counts=NULL){
       message(Sys.time(), paste0(" ### Processing read length group: ", rl))
       pheno = pheno[pheno$rls_group==rl,,drop=FALSE]
 
@@ -21,8 +21,10 @@ processReadLength = function(rl, pheno, jx_file, cores){
       genes = names(matrix_list)
 
       ## Load feature counts
-      message(Sys.time(), " # Compiling feature counts")
-      counts = getCounts(pheno[pheno$rls_group==rl,], jx_file, cores = cores)
+      if(length(counts)==0){
+            message(Sys.time(), " # Compiling feature counts")
+            counts = getCounts(pheno[pheno$rls_group==rl,], jx_file, cores = cores)
+      }
 
       ## Run the NNLS
       message(Sys.time(), " # Executing model")
